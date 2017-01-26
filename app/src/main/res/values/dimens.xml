@@ -4,4 +4,6 @@
     <dimen name="margin_small">8dp</dimen>
 
     <dimen name="pad_button_text">28sp</dimen>
+    <dimen name="formula_text">22sp</dimen>
+    <dimen name="result_text">30sp</dimen>
 </resources>
