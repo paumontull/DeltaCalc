@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">DeltaCalc</string>
+
+    <string name="dig_0">0</string>
+    <string name="dig_1">1</string>
+    <string name="dig_2">2</string>
+    <string name="dig_3">3</string>
+    <string name="dig_4">4</string>
+    <string name="dig_5">5</string>
+    <string name="dig_6">6</string>
+    <string name="dig_7">7</string>
+    <string name="dig_8">8</string>
+    <string name="dig_9">9</string>
+
+    <string name="del">DEL</string>
+    <string name="clr">CLR</string>
+
+    <string name="op_mul">×</string>
+    <string name="op_div">/</string>
+    <string name="op_sum">+</string>
+    <string name="op_sub">-</string>
+
+    <string name="dec_point">·</string>
+
+    <string name="l_par">(</string>
+    <string name="r_par">)</string>
+
+    <string name="eq">=</string>
+</resources>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.pau.deltacalc.DeltaPadLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pad"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/margin_small"
+    android:elevation="@dimen/margin_small"
+    android:background="@color/colorPrimary"
+    android:rowCount="4"
+    android:columnCount="5">
+
+    <Button
+        style="@style/padButton"
+        android:id="@+id/dig_7"
+        android:text="@string/dig_7"/>
+
+    <Button
+        style="@style/padButton"
+        android:id="@+id/dig_8"
+        android:text="@string/dig_8"/>
+
+    <Button
+        style="@style/padButton"
+        android:id="@+id/dig_9"
+        android:text="@string/dig_9"/>
+
+    <ImageButton
+        style="@style/padButton"
+        android:id="@+id/del"
+        android:src="@drawable/ic_keyboard_backspace_black_24dp"/>
+
+    <ImageButton
+        style="@style/padButton"
+        android:id="@+id/clr"
+        android:src="@drawable/ic_replay_black_24dp"/>
+
+    <Button
+        style="@style/padButton"
+        android:id="@+id/dig_4"
+        android:text="@string/dig_4"/>
+
+    <Button
+        style="@style/padButton"
+        android:id="@+id/dig_5"
+        android:text="@string/dig_5"/>
+
+    <Button
+        style="@style/padButton"
+        android:id="@+id/dig_6"
+        android:text="@string/dig_6"/>
+
+    <Button
+        style="@style/padButton"
+        android:id="@+id/op_mul"
+        android:text="@string/op_mul"/>
+
+    <Button
+        style="@style/padButton"
+        android:id="@+id/op_div"
+        android:text="@string/op_div"/>
+
+    <Button
+        style="@style/padButton"
+        android:id="@+id/dig_1"
+        android:text="@string/dig_1"/>
+
+    <Button
+        style="@style/padButton"
+        android:id="@+id/dig_2"
+        android:text="@string/dig_2"/>
+
+    <Button
+        style="@style/padButton"
+        android:id="@+id/dig_3"
+        android:text="@string/dig_3"/>
+
+    <Button
+        style="@style/padButton"
+        android:id="@+id/op_sum"
+        android:text="@string/op_sum"/>
+
+    <Button
+        style="@style/padButton"
+        android:id="@+id/op_sub"
+        android:text="@string/op_sub"/>
+
+    <Button
+        style="@style/padButton"
+        android:id="@+id/dig_0"
+        android:text="@string/dig_0"/>
+
+    <Button
+        style="@style/padButton"
+        android:id="@+id/dec_point"
+        android:text="@string/dec_point"/>
+
+    <Button
+        style="@style/padButton"
+        android:id="@+id/l_par"
+        android:text="@string/l_par"/>
+
+    <Button
+        style="@style/padButton"
+        android:id="@+id/r_par"
+        android:text="@string/r_par"/>
+
+    <Button
+        style="@style/padButton"
+        android:id="@+id/eq"
+        android:text="@string/eq"/>
+
+
+</com.example.pau.deltacalc.DeltaPadLayout>
