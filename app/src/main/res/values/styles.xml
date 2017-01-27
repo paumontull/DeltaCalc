@@ -1,31 +1,15 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="deltaCalcTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="deltaCalcTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="displayEditText" parent="@android:style/Widget.Material.Light.EditText">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">0dp</item>
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:cursorVisible">true</item>
-        <item name="android:maxLines">1</item>
-        <item name="android:inputType">text</item>
-        <item name="android:scrollHorizontally">true</item>
-        <item name="android:focusable">false</item>
-    </style>
-
-    <style name="padTextButton" parent="@android:style/Widget.Material.Light.Button.Borderless">
-        <item name="android:background">@drawable/pad_button_background</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textSize">@dimen/pad_button_text</item>
-        <item name="android:textColor">@color/colorSecondaryText</item>
-        <item name="android:onClick">onClick</item>
+    <style name="deltaCalcTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
 </resources>
