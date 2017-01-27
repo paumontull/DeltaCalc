@@ -21,10 +21,11 @@ public class CalculatorFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        formulaEditText = (EditText) getView().findViewById(R.id.display_formula);
-        resultEditText = (EditText) getView().findViewById(R.id.display_result);
+        View v = inflater.inflate(R.layout.fragment_calculator, container, false);
+        formulaEditText = (EditText) v.findViewById(R.id.display_formula);
+        resultEditText = (EditText) v.findViewById(R.id.display_result);
 
-        return inflater.inflate(R.layout.fragment_calculator, container, false);
+        return v;
     }
 
     public void onClick(View v){
@@ -73,7 +74,7 @@ public class CalculatorFragment extends Fragment {
                 onEqual();
                 break;
             default:
-                formula.append(((Button) v).getText());
+                formulaEditText.append(((Button) v).getText());
                 break;
         }
     }

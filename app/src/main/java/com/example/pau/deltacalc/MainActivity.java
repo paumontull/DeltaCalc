@@ -8,6 +8,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -15,6 +16,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     int currentFrag;
     DrawerLayout drawer;
     NavigationView navigationView;
+    CalculatorFragment calculatorFragment;
+    ExampleFragment exampleFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +50,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void setFragment(int id){
         switch (id){
             case R.id.nav_calc:
-                CalculatorFragment calculatorFragment = new CalculatorFragment();
+                calculatorFragment = new CalculatorFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calculatorFragment).commit();
                 break;
             case R.id.nav_example:
-                ExampleFragment exampleFragment = new ExampleFragment();
+                exampleFragment = new ExampleFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, exampleFragment).commit();
                 break;
             case R.id.nav_settings:
+                break;
+        }
+    }
+
+    public void onClick(View v){
+        switch (currentFrag){
+            case R.id.nav_calc:
+                calculatorFragment.onClick(v);
                 break;
         }
     }

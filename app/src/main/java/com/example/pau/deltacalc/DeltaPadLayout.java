@@ -3,6 +3,7 @@ package com.example.pau.deltacalc;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -17,6 +18,14 @@ public class DeltaPadLayout extends ViewGroup{
 
     public DeltaPadLayout(Context context, AttributeSet attrs){
         super(context, attrs, 0);
+
+        final TypedArray a = context.obtainStyledAttributes(attrs, new int[]{android.R.attr.rowCount, android.R.attr.columnCount}, 0, 0);
+
+        //Obtenim els atributs "rowCount" i "columnCount" si estan definits o els assignem 1 en cas contrari
+        mRowCount = a.getInt(0, 1);
+        mColCount = a.getInt(1, 1);
+
+        a.recycle();
     }
 
     public DeltaPadLayout(Context context, AttributeSet attrs, int defStyle){
@@ -74,11 +83,6 @@ public class DeltaPadLayout extends ViewGroup{
     @Override
     public LayoutParams generateLayoutParams(AttributeSet attrs) {
         return new MarginLayoutParams(getContext(), attrs);
-    }
-
-    @Override
-    protected LayoutParams generateDefaultLayoutParams() {
-        return new MarginLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
     }
 
     @Override
