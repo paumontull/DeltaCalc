@@ -26,6 +26,10 @@
     <string name="r_par">)</string>
 
     <string name="eq">=</string>
+
     <string name="display_formula_hint">FORMULA</string>
     <string name="display_result_hint">RESULT</string>
+
+    <string name="nav_calc">Calculator</string>
+    <string name="nav_settings">Settings</string>
 </resources>

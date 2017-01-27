@@ -7,8 +7,8 @@
     android:padding="@dimen/margin_small"
     android:elevation="@dimen/margin_small"
     android:background="@color/colorPrimary"
-    android:rowCount="4"
-    android:columnCount="5">
+    android:rowCount="1"
+    android:columnCount="1">
 
     <Button
         style="@style/padTextButton"
@@ -28,12 +28,12 @@
     <ImageButton
         style="@style/padTextButton"
         android:id="@+id/del"
-        android:src="@drawable/ic_keyboard_backspace_black_24dp"/>
+        android:src="@drawable/ic_backspace"/>
 
     <ImageButton
         style="@style/padTextButton"
         android:id="@+id/clr"
-        android:src="@drawable/ic_replay_black_24dp"/>
+        android:src="@drawable/ic_clear"/>
 
     <Button
         style="@style/padTextButton"

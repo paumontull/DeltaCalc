@@ -6,21 +6,17 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
- * Created by Pau Montull i Jové on 26/1/17.
- */
-
 public class DeltaPadLayout extends ViewGroup{
 
     private int mRowCount;
     private int mColCount;
 
     public DeltaPadLayout(Context context){
-        this(context, null);
+        super(context, null);
     }
 
     public DeltaPadLayout(Context context, AttributeSet attrs){
-        this(context, attrs, 0);
+        super(context, attrs, 0);
     }
 
     public DeltaPadLayout(Context context, AttributeSet attrs, int defStyle){

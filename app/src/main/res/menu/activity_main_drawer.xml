@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:divider="@drawable/divider_vertical"
+    android:showDividers="middle">
+
+    <group
+        android:id="@+id/group_features"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_calc"
+            android:icon="@drawable/ic_calculator"
+            android:title="@string/nav_calc"/>
+
+        <item
+            android:id="@+id/nav_example"
+            android:title="Example fragment"/>
+
+    </group>
+
+    <group
+        android:id="@+id/group_settings">
+
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/nav_settings"/>
+
+    </group>
+
+</menu>

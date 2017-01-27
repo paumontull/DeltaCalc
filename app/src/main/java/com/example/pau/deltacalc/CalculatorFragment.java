@@ -1,23 +1,30 @@
 package com.example.pau.deltacalc;
 
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class DeltaCalculator extends AppCompatActivity {
+public class CalculatorFragment extends Fragment {
 
-private EditText formula, result;
+    private EditText formulaEditText, resultEditText;
+    private StringBuilder formula, result;
+
+    public CalculatorFragment(){
+        // Required empty public constructor
+
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_calculator);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        formulaEditText = (EditText) getView().findViewById(R.id.display_formula);
+        resultEditText = (EditText) getView().findViewById(R.id.display_result);
 
-        formula = (EditText) findViewById(R.id.display_formula);
-        result = (EditText) findViewById(R.id.display_result);
+        return inflater.inflate(R.layout.fragment_calculator, container, false);
     }
 
     public void onClick(View v){
@@ -72,17 +79,16 @@ private EditText formula, result;
     }
 
     private void onEqual() {
-
-        result.setText(formula.getText());
+        resultEditText.setText(formulaEditText.getText());
     }
 
     private void onClear() {
-        formula.setText("");
-        result.setText("");
+        formulaEditText.setText("");
+        resultEditText.setText("");
     }
 
     private void onDelete() {
-        String text = formula.getText().toString();
-        if(text.length() != 0) formula.setText(text.substring(0, text.length() - 1));
+        String text = formulaEditText.getText().toString();
+        if(text.length() != 0) formulaEditText.setText(text.substring(0, text.length() - 1));
     }
 }
