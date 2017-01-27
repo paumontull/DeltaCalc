@@ -16,7 +16,7 @@
     <string name="clr">CLR</string>
 
     <string name="op_mul">×</string>
-    <string name="op_div">/</string>
+    <string name="op_div">÷</string>
     <string name="op_sum">+</string>
     <string name="op_sub">-</string>
 

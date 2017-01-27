@@ -15,7 +15,6 @@ public class CalculatorFragment extends Fragment {
 
     public CalculatorFragment(){
         // Required empty public constructor
-
     }
 
     @Override
