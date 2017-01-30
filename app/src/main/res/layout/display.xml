@@ -11,6 +11,7 @@
         style="@style/displayEditText"
         android:id="@+id/display_formula"
         android:hint="@string/display_formula_hint"
+        android:focusable="false"
         android:textSize="@dimen/formula_text"
         android:gravity="start|top"
         android:layout_weight="1"/>
@@ -19,6 +20,7 @@
         style="@style/displayEditText"
         android:id="@+id/display_result"
         android:hint="@string/display_result_hint"
+        android:focusable="false"
         android:textSize="@dimen/result_text"
         android:gravity="end|bottom"
         android:layout_weight="1"/>

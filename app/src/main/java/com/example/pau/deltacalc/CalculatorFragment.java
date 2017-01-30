@@ -5,9 +5,11 @@ import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -26,10 +28,16 @@ public class CalculatorFragment extends Fragment {
         formulaEditText = (EditText) v.findViewById(R.id.display_formula);
         resultEditText = (EditText) v.findViewById(R.id.display_result);
 
+        if(savedInstanceState != null){
+            formulaEditText.setText(savedInstanceState.getString(FORMULA_TEXT));
+            resultEditText.setText(savedInstanceState.getString(RESULT_TEXT));
+        }
+
         return v;
     }
 
     public void onClick(View v){
+        resultEditText.setText("");
         switch(v.getId()){/*
             case R.id.dig_0:
             case R.id.dig_1:
@@ -57,6 +65,7 @@ public class CalculatorFragment extends Fragment {
                 formulaEditText.setText("");
                 break;
             case R.id.eq:
+                resultEditText.setText(resultEditText.getHint());
                 break;
             case R.id.call:
                 onCall();
@@ -66,23 +75,34 @@ public class CalculatorFragment extends Fragment {
                 break;
         }
         String postfix = ShuntingYard.postfix(formulaEditText.getText().toString());
+        if(postfix.length() != 0){
+            while (postfix.charAt(postfix.length() - 1) == '0'){
+                postfix = postfix.substring(0, postfix.length() - 1);
+            }
+            if(postfix.charAt(postfix.length() - 1) == '.') postfix = postfix.substring(0, postfix.length() - 1);
+        }
         switch(postfix){
             case "Division by zero":
                 Snackbar.make(v, "Division by zero: NaN",Snackbar.LENGTH_SHORT).show();
-                resultEditText.setText("NaN");
+                resultEditText.setHint("NaN");
                 break;
             case "Mismatched parenthesis":
                 Snackbar.make(v, "Mismatched parenthesis",Snackbar.LENGTH_SHORT).show();
-                resultEditText.setText("NaN");
+                resultEditText.setHint("NaN");
                 break;
             default:
-                resultEditText.setText(postfix);
+                resultEditText.setHint(postfix);
                 break;
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
     private void onCall() {
-        String phone_num = formulaEditText.toString();
+        String phone_num = formulaEditText.getText().toString();
         Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone_num));
         startActivity(intent);
     }
@@ -90,5 +110,12 @@ public class CalculatorFragment extends Fragment {
     private void onDelete() {
         String text = formulaEditText.getText().toString();
         if(text.length() != 0) formulaEditText.setText(text.substring(0, text.length() - 1));
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstantState) {
+        savedInstantState.putString("FORMULA_TEXT", formulaEditText.getText().toString());
+        savedInstantState.putString("RESULT_TEXT", resultEditText.getText().toString());
+        super.onSaveInstanceState(savedInstantState);
     }
 }

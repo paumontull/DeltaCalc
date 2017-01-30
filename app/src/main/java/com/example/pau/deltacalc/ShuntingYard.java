@@ -60,7 +60,7 @@ public class ShuntingYard {
         }
         if(exception) return msg;
         else if(outputStack.isEmpty()) return "";
-        else return outputStack.peek().setScale(12, RoundingMode.HALF_EVEN).toString();
+        else return outputStack.peek().setScale(15, RoundingMode.HALF_EVEN).toString();
     }
 
     private static void processNumber() {

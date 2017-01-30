@@ -1,6 +1,7 @@
 package com.example.pau.deltacalc;
 
 
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -9,6 +10,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -80,6 +82,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onBackPressed() {
         if(drawer.isDrawerOpen(GravityCompat.START)) drawer.closeDrawer(GravityCompat.START);
         else super.onBackPressed();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstantState) {
+        savedInstantState.putInt("CURRENT_FRAG", currentFrag);
+        super.onSaveInstanceState(savedInstantState);
     }
 
     public void onClick(View v){
