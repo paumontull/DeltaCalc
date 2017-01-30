@@ -11,7 +11,7 @@ import android.widget.EditText;
 public class CalculatorFragment extends Fragment {
 
     private EditText formulaEditText, resultEditText;
-    private StringBuilder formula, result;
+    private CharSequence expr;
 
     public CalculatorFragment(){
         // Required empty public constructor
@@ -30,56 +30,37 @@ public class CalculatorFragment extends Fragment {
     public void onClick(View v){
         switch(v.getId()){/*
             case R.id.dig_0:
-                break;
             case R.id.dig_1:
-                break;
             case R.id.dig_2:
-                break;
             case R.id.dig_3:
-                break;
             case R.id.dig_4:
-                break;
             case R.id.dig_5:
-                break;
             case R.id.dig_6:
-                break;
             case R.id.dig_7:
-                break;
             case R.id.dig_8:
-                break;
             case R.id.dig_9:
-                break;*/
+            case R.id.op_mul:
+            case R.id.op_div:
+            case R.id.op_sum:
+            case R.id.op_sub:
+            case R.id.l_par:
+            case R.id.r_par:*/
+            case R.id.dec_point:
+                formulaEditText.append(".");
+                break;
             case R.id.del:
                 onDelete();
                 break;
             case R.id.clr:
                 onClear();
-                break;/*
-            case R.id.op_mul:
                 break;
-            case R.id.op_div:
-                break;
-            case R.id.op_sum:
-                break;
-            case R.id.op_sub:
-                break;
-            case R.id.dec_point:
-                break;
-            case R.id.l_par:
-                break;
-            case R.id.r_par:
-                break;*/
             case R.id.eq:
-                onEqual();
                 break;
             default:
                 formulaEditText.append(((Button) v).getText());
                 break;
         }
-    }
-
-    private void onEqual() {
-        resultEditText.setText(formulaEditText.getText());
+        resultEditText.setText(ShuntingYard.postfix(formulaEditText.getText().toString()));
     }
 
     private void onClear() {
