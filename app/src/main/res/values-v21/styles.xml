@@ -8,6 +8,9 @@
                 <item name="android:maxLines">1</item>
                 <item name="android:inputType">text</item>
                 <item name="android:scrollHorizontally">true</item>
+                <item name="android:focusable">true</item>
+                <item name="android:textIsSelectable">true</item>
+                <item name="android:cursorVisible">false</item>
         </style>
 
         <style name="padTextButton" parent="@android:style/Widget.Material.Light.Button.Borderless">

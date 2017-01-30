@@ -40,6 +40,7 @@ public class ShuntingYard {
         msg = "";
         opStack.clear();
         outputStack.clear();
+        //if(infix.length() != 0 && ops.containsKey(infix.charAt(infix.length() - 1))) infix = infix.substring(0, infix.length() - 1);
         for(int i = 0; i < infix.length(); ++i){
             char tok = infix.charAt(i);
 

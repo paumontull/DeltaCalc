@@ -1,21 +1,25 @@
 package com.example.pau.deltacalc;
 
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
 public class CalculatorFragment extends Fragment {
 
+    private static final String RESULT_HINT = "RESULT_HINT";
+    private static final String TEXT_SIZE = "TEXT_SIZE";
     private EditText formulaEditText, resultEditText;
+    private View v;
 
     public CalculatorFragment(){
         // Required empty public constructor
@@ -24,21 +28,26 @@ public class CalculatorFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_calculator, container, false);
+        v = inflater.inflate(R.layout.fragment_calculator, container, false);
         formulaEditText = (EditText) v.findViewById(R.id.display_formula);
         resultEditText = (EditText) v.findViewById(R.id.display_result);
-
-        if(savedInstanceState != null){
-            formulaEditText.setText(savedInstanceState.getString(FORMULA_TEXT));
-            resultEditText.setText(savedInstanceState.getString(RESULT_TEXT));
-        }
 
         return v;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if(savedInstanceState != null) {
+            resultEditText.setHint(savedInstanceState.getString(RESULT_HINT));
+            resultEditText.setTextSize(TypedValue.COMPLEX_UNIT_PX, savedInstanceState.getFloat(TEXT_SIZE));
+        }
+    }
+
     public void onClick(View v){
         resultEditText.setText("");
-        switch(v.getId()){/*
+        resultEditText.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.result_hint));
+        switch(v.getId()){
             case R.id.dig_0:
             case R.id.dig_1:
             case R.id.dig_2:
@@ -49,12 +58,18 @@ public class CalculatorFragment extends Fragment {
             case R.id.dig_7:
             case R.id.dig_8:
             case R.id.dig_9:
+                formulaEditText.append(((Button) v).getText());
+                eval();
+                break;
             case R.id.op_mul:
             case R.id.op_div:
             case R.id.op_sum:
             case R.id.op_sub:
+            case R.id.op_exp:
             case R.id.l_par:
-            case R.id.r_par:*/
+            case R.id.r_par:
+                formulaEditText.append(((Button) v).getText());
+                break;
             case R.id.dec_point:
                 formulaEditText.append(".");
                 break;
@@ -62,18 +77,18 @@ public class CalculatorFragment extends Fragment {
                 onDelete();
                 break;
             case R.id.clr:
-                formulaEditText.setText("");
+                onClear();
                 break;
             case R.id.eq:
-                resultEditText.setText(resultEditText.getHint());
+                onEqual();
                 break;
             case R.id.call:
-                onCall();
-                break;
-            default:
-                formulaEditText.append(((Button) v).getText());
+                onDial();
                 break;
         }
+    }
+
+    private void eval(){
         String postfix = ShuntingYard.postfix(formulaEditText.getText().toString());
         if(postfix.length() != 0){
             while (postfix.charAt(postfix.length() - 1) == '0'){
@@ -101,21 +116,31 @@ public class CalculatorFragment extends Fragment {
         super.onResume();
     }
 
-    private void onCall() {
+    private void onDial(){
         String phone_num = formulaEditText.getText().toString();
         Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone_num));
         startActivity(intent);
     }
 
-    private void onDelete() {
+    private void onClear(){
+        formulaEditText.setText("");
+        resultEditText.setHint("RESULT");
+    }
+
+    private void onDelete(){
         String text = formulaEditText.getText().toString();
         if(text.length() != 0) formulaEditText.setText(text.substring(0, text.length() - 1));
     }
 
+    private void onEqual(){
+        resultEditText.setText(resultEditText.getHint());
+        resultEditText.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.result_text));
+    }
+
     @Override
-    public void onSaveInstanceState(Bundle savedInstantState) {
-        savedInstantState.putString("FORMULA_TEXT", formulaEditText.getText().toString());
-        savedInstantState.putString("RESULT_TEXT", resultEditText.getText().toString());
-        super.onSaveInstanceState(savedInstantState);
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("RESULT_HINT", resultEditText.getHint().toString());
+        outState.putFloat("TEXT_SIZE", resultEditText.getTextSize());
     }
 }

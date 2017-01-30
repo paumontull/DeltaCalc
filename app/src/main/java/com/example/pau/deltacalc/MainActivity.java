@@ -17,6 +17,8 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
+    private static final String CALC = "CALC";
+    private static final String EXAMPLE = "EXAMPLE";
     private static final String CURRENT_FRAG = "CURRENT_FRAG";
     int currentFrag;
     Toolbar toolbar;
@@ -31,11 +33,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if(savedInstanceState != null){
-            currentFrag = savedInstanceState.getInt(CURRENT_FRAG);
+        if(savedInstanceState != null) {
+            setFragment(savedInstanceState.getInt(CURRENT_FRAG));
         }
-        else currentFrag = R.id.nav_calc;
-        setFragment(currentFrag);
+        else setFragment(R.id.nav_calc);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -46,6 +47,68 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    public void setFragment(int id){
+        switch (id){
+            case R.id.nav_calc:
+                toMainFragment();
+                break;
+            case R.id.nav_example:
+                toExFragment();
+                break;
+            case R.id.nav_settings:
+                break;
+        }
+    }
+
+    private void toMainFragment(){
+        if(getSupportFragmentManager().getBackStackEntryCount() > 0){
+            //The main fragment is in the backstack
+            getSupportFragmentManager().popBackStack();
+        }
+        else{
+            //The main fragment is not in the backstack
+            calculatorFragment = (CalculatorFragment) getSupportFragmentManager().findFragmentByTag(CALC);
+            if(calculatorFragment == null){
+                //The main fragment has not been loaded yet
+                calculatorFragment = new CalculatorFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calculatorFragment, CALC).commit();
+            }
+        }
+        currentFrag = R.id.nav_calc;
+    }
+
+    private void toExFragment(){
+        if(getSupportFragmentManager().getBackStackEntryCount() == 0){
+            //The current fragment is the main fragment
+            exampleFragment = new ExampleFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, exampleFragment, EXAMPLE).addToBackStack(null).commit();
+        }
+        else{
+            //The current fragment is not the main fragment
+            exampleFragment = (ExampleFragment) getSupportFragmentManager().findFragmentByTag(EXAMPLE);
+            if(exampleFragment == null){
+                //The current fragment is neither the main fragment nor itself
+                exampleFragment = new ExampleFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, exampleFragment, EXAMPLE).commit();
+            }
+        }
+        currentFrag = R.id.nav_example;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("CURRENT_FRAG", currentFrag);
+    }
+
+    public void onClick(View v){
+        switch (currentFrag){
+            case R.id.nav_calc:
+                calculatorFragment.onClick(v);
+                break;
+        }
     }
 
     @Override
@@ -63,38 +126,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    public void setFragment(int id){
-        switch (id){
-            case R.id.nav_calc:
-                calculatorFragment = new CalculatorFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calculatorFragment).commit();
-                break;
-            case R.id.nav_example:
-                exampleFragment = new ExampleFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, exampleFragment).commit();
-                break;
-            case R.id.nav_settings:
-                break;
-        }
-    }
-
     @Override
     public void onBackPressed() {
         if(drawer.isDrawerOpen(GravityCompat.START)) drawer.closeDrawer(GravityCompat.START);
-        else super.onBackPressed();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstantState) {
-        savedInstantState.putInt("CURRENT_FRAG", currentFrag);
-        super.onSaveInstanceState(savedInstantState);
-    }
-
-    public void onClick(View v){
-        switch (currentFrag){
-            case R.id.nav_calc:
-                calculatorFragment.onClick(v);
-                break;
+        else if(getSupportFragmentManager().getBackStackEntryCount() > 0){
+            getSupportFragmentManager().popBackStack();
+            navigationView.setCheckedItem(R.id.nav_calc);
         }
+        else super.onBackPressed();
     }
 }
