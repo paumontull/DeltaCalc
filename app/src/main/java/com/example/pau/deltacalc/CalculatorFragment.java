@@ -1,5 +1,8 @@
 package com.example.pau.deltacalc;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,7 +14,6 @@ import android.widget.EditText;
 public class CalculatorFragment extends Fragment {
 
     private EditText formulaEditText, resultEditText;
-    private CharSequence expr;
 
     public CalculatorFragment(){
         // Required empty public constructor
@@ -52,20 +54,37 @@ public class CalculatorFragment extends Fragment {
                 onDelete();
                 break;
             case R.id.clr:
-                onClear();
+                formulaEditText.setText("");
                 break;
             case R.id.eq:
+                break;
+            case R.id.call:
+                onCall();
                 break;
             default:
                 formulaEditText.append(((Button) v).getText());
                 break;
         }
-        resultEditText.setText(ShuntingYard.postfix(formulaEditText.getText().toString()));
+        String postfix = ShuntingYard.postfix(formulaEditText.getText().toString());
+        switch(postfix){
+            case "Division by zero":
+                Snackbar.make(v, "Division by zero: NaN",Snackbar.LENGTH_SHORT).show();
+                resultEditText.setText("NaN");
+                break;
+            case "Mismatched parenthesis":
+                Snackbar.make(v, "Mismatched parenthesis",Snackbar.LENGTH_SHORT).show();
+                resultEditText.setText("NaN");
+                break;
+            default:
+                resultEditText.setText(postfix);
+                break;
+        }
     }
 
-    private void onClear() {
-        formulaEditText.setText("");
-        resultEditText.setText("");
+    private void onCall() {
+        String phone_num = formulaEditText.toString();
+        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone_num));
+        startActivity(intent);
     }
 
     private void onDelete() {

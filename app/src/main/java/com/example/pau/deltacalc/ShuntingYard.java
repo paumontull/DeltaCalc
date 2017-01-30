@@ -3,19 +3,18 @@ package com.example.pau.deltacalc;
 import android.util.Log;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Stack;
-
-/**
- * Created by Pau Montull i Jové on 29/1/17.
- */
 
 public class ShuntingYard {
 
     private static Stack<Operator> opStack = new Stack<>();
     private static Stack<BigDecimal> outputStack = new Stack<>();
     private static StringBuilder tempNum = new StringBuilder();
+    private static boolean exception = false;
+    private static String msg;
 
     private enum Operator{
         ADD(0), SUB(0), MUL(1), DIV(1), EXP(2), PAR(-1);
@@ -33,10 +32,12 @@ public class ShuntingYard {
     }};
 
     private static boolean isHigherPrec(Operator op1, Operator op2){
-        return op1.precedence > op2.precedence || (op1.precedence == op2.precedence && op1 == Operator.EXP);
+        return op1.precedence >= op2.precedence;
     }
 
     public static String postfix(String infix){
+        exception = false;
+        msg = "";
         opStack.clear();
         outputStack.clear();
         for(int i = 0; i < infix.length(); ++i){
@@ -50,26 +51,28 @@ public class ShuntingYard {
                 processRPar();
             }
             else{
-                processDigit(tok);
+                tempNum.append(tok);
             }
         }
         processNumber();
         while(!opStack.isEmpty() && outputStack.size() > 1){
             popOpToOutput();
         }
-        if(outputStack.isEmpty()) return "";
-        else return outputStack.peek().setScale(12, BigDecimal.ROUND_HALF_EVEN).toString();
+        if(exception) return msg;
+        else if(outputStack.isEmpty()) return "";
+        else return outputStack.peek().setScale(12, RoundingMode.HALF_EVEN).toString();
     }
 
     private static void processNumber() {
         if(tempNum.length() != 0){
-            outputStack.push(new BigDecimal(tempNum.toString()));
-            tempNum.setLength(0);
+            if(tempNum.toString().charAt(0) == '.'){
+                tempNum = new StringBuilder("0").append(tempNum.toString());
+            }
+            else{
+                outputStack.push(new BigDecimal(tempNum.toString()).setScale(15, RoundingMode.HALF_EVEN));
+                tempNum.setLength(0);
+            }
         }
-    }
-
-    public static void processDigit(char tok){
-        tempNum.append(tok);
     }
 
     public static void processOperator(char tok){
@@ -93,7 +96,8 @@ public class ShuntingYard {
             popOpToOutput();
         }
         if(opStack.isEmpty()) {
-                        /* Mismatched parenthesis */
+            exception = true;
+            msg = "Mismatched parenthesis";
         }
         else{
             opStack.pop();
@@ -101,26 +105,31 @@ public class ShuntingYard {
     }
 
     private static void popOpToOutput(){
-        BigDecimal operand1 = outputStack.peek();
+        BigDecimal operandRight = outputStack.peek();
         outputStack.pop();
-        BigDecimal operand2 = outputStack.peek();
+        BigDecimal operandLeft = outputStack.peek();
         outputStack.pop();
 
         switch(opStack.peek()){
             case ADD:
-                outputStack.push(operand1.add(operand2));
+                outputStack.push(operandLeft.add(operandRight));
                 break;
             case SUB:
-                outputStack.push(operand2.subtract(operand1));
+                outputStack.push(operandLeft.subtract(operandRight));
                 break;
             case MUL:
-                outputStack.push(operand1.multiply(operand2));
+                outputStack.push(operandLeft.multiply(operandRight));
                 break;
             case DIV:
-                outputStack.push(operand1.divide(operand2, BigDecimal.ROUND_HALF_EVEN));
+                try{
+                    outputStack.push(operandLeft.divide(operandRight, BigDecimal.ROUND_HALF_EVEN));
+                } catch(java.lang.ArithmeticException e){
+                    exception = true;
+                    msg = e.getMessage();
+                }
                 break;
             case EXP:
-                outputStack.push(operand1.pow(operand2.intValue()));
+                outputStack.push(operandLeft.pow(operandRight.intValue()));
                 break;
         }
         opStack.pop();

@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<com.example.pau.deltacalc.DeltaPadLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/margin_small"
-    android:background="@color/colorAccent">
+    android:background="@color/colorAccent"
+    android:rowCount="1"
+    android:columnCount="2">
 
-</LinearLayout>
+    <ImageButton
+        style="@style/padTextButton"
+        android:id="@+id/call"
+        android:src="@drawable/ic_call_black_24dp"/>
+
+    <Button
+        style="@style/padTextButton"
+        android:id="@+id/exp"
+        android:text="@string/op_exp"/>
+
+</com.example.pau.deltacalc.DeltaPadLayout>
