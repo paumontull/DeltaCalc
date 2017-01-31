@@ -13,8 +13,8 @@
             android:checked="true"/>
 
         <item
-            android:id="@+id/nav_example"
-            android:title="Example fragment"/>
+            android:id="@+id/nav_music"
+            android:title="@string/nav_music"/>
 
     </group>
 

@@ -1,7 +1,6 @@
 package com.example.pau.deltacalc;
 
 
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -10,7 +9,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,25 +16,20 @@ import android.view.View;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private static final String CALC = "CALC";
-    private static final String EXAMPLE = "EXAMPLE";
+    private static final String MUSIC = "MUSIC";
     private static final String CURRENT_FRAG = "CURRENT_FRAG";
     int currentFrag;
     Toolbar toolbar;
     DrawerLayout drawer;
     NavigationView navigationView;
     CalculatorFragment calculatorFragment;
-    ExampleFragment exampleFragment;
+    MusicFragment musicFragment;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        if(savedInstanceState != null) {
-            setFragment(savedInstanceState.getInt(CURRENT_FRAG));
-        }
-        else setFragment(R.id.nav_calc);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -47,6 +40,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        if(savedInstanceState != null) {
+            setFragment(savedInstanceState.getInt(CURRENT_FRAG));
+        }
+        else setFragment(R.id.nav_calc);
     }
 
     public void setFragment(int id){
@@ -54,8 +52,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_calc:
                 toMainFragment();
                 break;
-            case R.id.nav_example:
-                toExFragment();
+            case R.id.nav_music:
+                toMusicFragment();
                 break;
             case R.id.nav_settings:
                 break;
@@ -77,24 +75,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
         currentFrag = R.id.nav_calc;
+        getSupportActionBar().setTitle(R.string.nav_calc);
     }
 
-    private void toExFragment(){
+    private void toMusicFragment(){
         if(getSupportFragmentManager().getBackStackEntryCount() == 0){
             //The current fragment is the main fragment
-            exampleFragment = new ExampleFragment();
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, exampleFragment, EXAMPLE).addToBackStack(null).commit();
+            musicFragment = new MusicFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, musicFragment, MUSIC).addToBackStack(null).commit();
         }
         else{
             //The current fragment is not the main fragment
-            exampleFragment = (ExampleFragment) getSupportFragmentManager().findFragmentByTag(EXAMPLE);
-            if(exampleFragment == null){
+            musicFragment = (MusicFragment) getSupportFragmentManager().findFragmentByTag(MUSIC);
+            if(musicFragment == null){
                 //The current fragment is neither the main fragment nor itself
-                exampleFragment = new ExampleFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, exampleFragment, EXAMPLE).commit();
+                musicFragment = new MusicFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, musicFragment, MUSIC).commit();
             }
         }
-        currentFrag = R.id.nav_example;
+        currentFrag = R.id.nav_music;
+        getSupportActionBar().setTitle(R.string.nav_music);
     }
 
     @Override

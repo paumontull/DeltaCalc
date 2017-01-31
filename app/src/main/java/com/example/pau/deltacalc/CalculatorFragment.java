@@ -90,11 +90,8 @@ public class CalculatorFragment extends Fragment {
 
     private void eval(){
         String postfix = ShuntingYard.postfix(formulaEditText.getText().toString());
-        if(postfix.length() != 0){
-            while (postfix.charAt(postfix.length() - 1) == '0'){
-                postfix = postfix.substring(0, postfix.length() - 1);
-            }
-            if(postfix.charAt(postfix.length() - 1) == '.') postfix = postfix.substring(0, postfix.length() - 1);
+        while (postfix.endsWith("0") || postfix.endsWith(".")){
+            postfix = postfix.substring(0, postfix.length() - 1);
         }
         switch(postfix){
             case "Division by zero":

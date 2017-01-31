@@ -40,13 +40,29 @@ public class ShuntingYard {
         msg = "";
         opStack.clear();
         outputStack.clear();
+        char lastChar = '0';
+
         //if(infix.length() != 0 && ops.containsKey(infix.charAt(infix.length() - 1))) infix = infix.substring(0, infix.length() - 1);
         for(int i = 0; i < infix.length(); ++i){
             char tok = infix.charAt(i);
 
             //Check for operator
             if(ops.containsKey(tok)){
-                processOperator(tok);
+                if(ops.containsKey(lastChar)){
+                    if(tok == '-' || tok == '+'){
+                        opStack.push(Operator.PAR);
+                        outputStack.push(new BigDecimal("0").setScale(15, RoundingMode.HALF_EVEN));
+                        processOperator(tok);
+                        processRPar();
+                    }
+                    else if(tok != '('){
+                        exception = true;
+                        msg = "Wrong expression";
+                        break;
+                    }
+                }
+                else processOperator(tok);
+                Log.v("OP", "" + tok);
             }
             else if(tok == ')'){
                 processRPar();
@@ -54,13 +70,16 @@ public class ShuntingYard {
             else{
                 tempNum.append(tok);
             }
-        }
-        processNumber();
-        while(!opStack.isEmpty() && outputStack.size() > 1){
-            popOpToOutput();
+            lastChar = tok;
         }
         if(exception) return msg;
-        else if(outputStack.isEmpty()) return "";
+        processNumber();
+        Log.v("BUCLE ACABAT", outputStack.peek().toString());
+        while(!opStack.isEmpty() && outputStack.size() > 1){
+            Log.v("BUCLE ACABAT", outputStack.peek().toString());
+            popOpToOutput();
+        }
+        if(outputStack.isEmpty()) return "";
         else return outputStack.peek().setScale(15, RoundingMode.HALF_EVEN).toString();
     }
 
@@ -89,6 +108,12 @@ public class ShuntingYard {
         }
     }
 
+    private static void unaryMinus() {
+        BigDecimal operandRight = outputStack.peek();
+        outputStack.pop();
+        outputStack.push(operandRight.negate());
+    }
+
     public static void processRPar(){
         processNumber();
 
@@ -100,7 +125,7 @@ public class ShuntingYard {
             exception = true;
             msg = "Mismatched parenthesis";
         }
-        else{
+        else if(opStack.peek() == Operator.PAR){
             opStack.pop();
         }
     }
@@ -116,6 +141,7 @@ public class ShuntingYard {
                 outputStack.push(operandLeft.add(operandRight));
                 break;
             case SUB:
+                Log.v("SUB", operandLeft.toString() + "-" + operandRight.toString());
                 outputStack.push(operandLeft.subtract(operandRight));
                 break;
             case MUL:
@@ -130,8 +156,11 @@ public class ShuntingYard {
                 }
                 break;
             case EXP:
+                Log.v("EXP1", operandLeft.toString() + "^" + operandRight.toString());
                 outputStack.push(operandLeft.pow(operandRight.intValue()));
                 break;
+            default:
+                Log.v("EXP", operandLeft.toString() + "^" + operandRight.toString());
         }
         opStack.pop();
     }
