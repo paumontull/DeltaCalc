@@ -39,6 +39,9 @@ public class ShuntingYard {
         opStack.clear();
         outputStack.clear();
 
+        while(expr.length() != 0 && ops.containsKey(expr.charAt(expr.length()-1))){
+            expr.deleteCharAt(expr.length()-1);
+        }
         if(infix.startsWith("-")) expr.setCharAt(0, '_');
         else if (infix.startsWith("+")) expr.deleteCharAt(0);
         Log.v("INFIX", infix);
@@ -50,7 +53,11 @@ public class ShuntingYard {
 
             if(ops.containsKey(tok)){
                 Log.v("OPS_tok", Character.toString(tok));
-                if(ops.containsKey(lastTok) || lastTok == ')'){
+                if(tok == '(' && !ops.containsKey(lastTok)){
+                    tok = '×';
+                    --i;
+                }
+                else if(ops.containsKey(lastTok) || lastTok == ')'){
                     if (tok == '+') continue;
                     else if (tok == '-') tok = '_';
                     else if (lastTok == ')'){
@@ -59,6 +66,7 @@ public class ShuntingYard {
                             --i;
                         }
                     }
+                    else if(!((tok == '(' && (lastTok == '+' || lastTok == '-' || lastTok == '^' || lastTok == '(')) || (tok == ')' && lastTok == '('))) throw new RuntimeException("Bad expression");
                     Log.v("OPS_tok2", Character.toString(tok));
                 }
 

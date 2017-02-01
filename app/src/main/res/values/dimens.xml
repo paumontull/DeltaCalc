@@ -2,6 +2,7 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="margin_large">16dp</dimen>
     <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_smaller">4dp</dimen>
 
     <dimen name="pad_button_text">28sp</dimen>
     <dimen name="formula_text">22sp</dimen>
