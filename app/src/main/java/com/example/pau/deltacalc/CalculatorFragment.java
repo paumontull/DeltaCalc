@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,8 +68,11 @@ public class CalculatorFragment extends Fragment {
             case R.id.op_sub:
             case R.id.op_exp:
             case R.id.l_par:
+                formulaEditText.append(((Button) v).getText());
+                break;
             case R.id.r_par:
                 formulaEditText.append(((Button) v).getText());
+                eval();
                 break;
             case R.id.dec_point:
                 formulaEditText.append(".");
@@ -89,22 +93,17 @@ public class CalculatorFragment extends Fragment {
     }
 
     private void eval(){
-        String postfix = ShuntingYard.postfix(formulaEditText.getText().toString());
-        while (postfix.endsWith("0") || postfix.endsWith(".")){
-            postfix = postfix.substring(0, postfix.length() - 1);
+        try {
+            Log.v("INPUT", formulaEditText.getText().toString());
+            String eval = ShuntingYard.eval(formulaEditText.getText().toString());
+            while (eval.endsWith("0") || eval.endsWith(".")) {
+                eval = eval.substring(0, eval.length() - 1);
+            }
+            if(eval.equals("0E-15")) resultEditText.setHint("0");
+            else resultEditText.setHint(eval);
         }
-        switch(postfix){
-            case "Division by zero":
-                Snackbar.make(v, "Division by zero: NaN",Snackbar.LENGTH_SHORT).show();
-                resultEditText.setHint("NaN");
-                break;
-            case "Mismatched parenthesis":
-                Snackbar.make(v, "Mismatched parenthesis",Snackbar.LENGTH_SHORT).show();
-                resultEditText.setHint("NaN");
-                break;
-            default:
-                resultEditText.setHint(postfix);
-                break;
+            catch(RuntimeException e){
+            Log.v("EXCEPTION", ""+e.getMessage());
         }
     }
 

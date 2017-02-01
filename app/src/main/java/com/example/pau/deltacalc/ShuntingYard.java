@@ -13,11 +13,9 @@ public class ShuntingYard {
     private static Stack<Operator> opStack = new Stack<>();
     private static Stack<BigDecimal> outputStack = new Stack<>();
     private static StringBuilder tempNum = new StringBuilder();
-    private static boolean exception = false;
-    private static String msg;
 
     private enum Operator{
-        ADD(0), SUB(0), MUL(1), DIV(1), EXP(2), PAR(-1);
+        ADD(0), SUB(0), SUU(3), MUL(1), DIV(1), EXP(2), PAR(-1);
         final int precedence;
         Operator(int p) { precedence = p; }
     }
@@ -25,6 +23,7 @@ public class ShuntingYard {
     private static Map<Character, Operator> ops = new HashMap<Character, Operator>(){{
         put('+', Operator.ADD);
         put('-', Operator.SUB);
+        put('_', Operator.SUU);
         put('×', Operator.MUL);
         put('÷', Operator.DIV);
         put('^', Operator.EXP);
@@ -35,132 +34,124 @@ public class ShuntingYard {
         return op1.precedence >= op2.precedence;
     }
 
-    public static String postfix(String infix){
-        exception = false;
-        msg = "";
+    public static String eval(String infix){
+        StringBuilder expr = new StringBuilder(infix);
         opStack.clear();
         outputStack.clear();
-        char lastChar = '0';
 
-        //if(infix.length() != 0 && ops.containsKey(infix.charAt(infix.length() - 1))) infix = infix.substring(0, infix.length() - 1);
-        for(int i = 0; i < infix.length(); ++i){
-            char tok = infix.charAt(i);
+        if(infix.startsWith("-")) expr.setCharAt(0, '_');
+        else if (infix.startsWith("+")) expr.deleteCharAt(0);
+        Log.v("INFIX", infix);
+        Log.v("EXPR", expr.toString());
 
-            //Check for operator
+        char lastTok = '+';
+        for(int i = 0; i < expr.length(); ++i){
+            char tok = expr.charAt(i);
+
             if(ops.containsKey(tok)){
-                if(ops.containsKey(lastChar)){
-                    if(tok == '-' || tok == '+'){
-                        opStack.push(Operator.PAR);
-                        outputStack.push(new BigDecimal("0").setScale(15, RoundingMode.HALF_EVEN));
-                        processOperator(tok);
-                        processRPar();
+                Log.v("OPS_tok", Character.toString(tok));
+                if(ops.containsKey(lastTok) || lastTok == ')'){
+                    if (tok == '+') continue;
+                    else if (tok == '-') tok = '_';
+                    else if (lastTok == ')'){
+                        if(tok == '(') {
+                            tok = '×';
+                            --i;
+                        }
                     }
-                    else if(tok != '('){
-                        exception = true;
-                        msg = "Wrong expression";
-                        break;
-                    }
+                    Log.v("OPS_tok2", Character.toString(tok));
                 }
-                else processOperator(tok);
-                Log.v("OP", "" + tok);
+
+                evalNumber();
+
+                Operator op = ops.get(tok);
+                if(op == Operator.PAR) opStack.push(op);
+                else{
+                    while (!opStack.isEmpty() && isHigherPrec(opStack.peek(), op)) {
+                        popOpToOutput();
+                    }
+                    opStack.push(op);
+                }
             }
             else if(tok == ')'){
-                processRPar();
+                Log.v("RPAR", "right");
+                evalNumber();
+                while(!opStack.isEmpty() && opStack.peek() != Operator.PAR){
+                    popOpToOutput();
+                }
+                if(opStack.isEmpty()) throw new RuntimeException("Mismatched parentheses");
+                else opStack.pop();
             }
             else{
+                Log.v("NUM", Character.toString(tok));
                 tempNum.append(tok);
             }
-            lastChar = tok;
+
+            lastTok = tok;
         }
-        if(exception) return msg;
-        processNumber();
-        Log.v("BUCLE ACABAT", outputStack.peek().toString());
-        while(!opStack.isEmpty() && outputStack.size() > 1){
-            Log.v("BUCLE ACABAT", outputStack.peek().toString());
-            popOpToOutput();
-        }
-        if(outputStack.isEmpty()) return "";
-        else return outputStack.peek().setScale(15, RoundingMode.HALF_EVEN).toString();
-    }
-
-    private static void processNumber() {
-        if(tempNum.length() != 0){
-            if(tempNum.toString().charAt(0) == '.'){
-                tempNum = new StringBuilder("0").append(tempNum.toString());
-            }
-            else{
-                outputStack.push(new BigDecimal(tempNum.toString()).setScale(15, RoundingMode.HALF_EVEN));
-                tempNum.setLength(0);
-            }
-        }
-    }
-
-    public static void processOperator(char tok){
-        processNumber();
-
-        Operator op = ops.get(tok);
-        if(op == Operator.PAR) opStack.push(op);
-        else{
-            while(!opStack.isEmpty() && isHigherPrec(opStack.peek(), op)){
-                popOpToOutput();
-            }
-            opStack.push(op);
-        }
-    }
-
-    private static void unaryMinus() {
-        BigDecimal operandRight = outputStack.peek();
-        outputStack.pop();
-        outputStack.push(operandRight.negate());
-    }
-
-    public static void processRPar(){
-        processNumber();
-
-        //pop operators until closing parenthesis
+        evalNumber();
         while(!opStack.isEmpty() && opStack.peek() != Operator.PAR){
             popOpToOutput();
         }
-        if(opStack.isEmpty()) {
-            exception = true;
-            msg = "Mismatched parenthesis";
-        }
-        else if(opStack.peek() == Operator.PAR){
-            opStack.pop();
+        if(outputStack.size() == 0) return "";
+        Log.v("OUTPUT", outputStack.peek().toString());
+        return outputStack.peek().setScale(15, RoundingMode.HALF_EVEN).toString();
+    }
+
+    private static void evalNumber(){
+        if(tempNum.length() != 0) {
+            if(tempNum.charAt(0) == '.'){
+                tempNum = new StringBuilder("0").append(tempNum.toString());
+            }
+            outputStack.push(new BigDecimal(tempNum.toString()).setScale(15, RoundingMode.HALF_EVEN));
+            tempNum.setLength(0);
         }
     }
 
     private static void popOpToOutput(){
         BigDecimal operandRight = outputStack.peek();
         outputStack.pop();
-        BigDecimal operandLeft = outputStack.peek();
-        outputStack.pop();
+        BigDecimal operandLeft;
 
         switch(opStack.peek()){
             case ADD:
+                operandLeft = outputStack.peek();
+                outputStack.pop();
                 outputStack.push(operandLeft.add(operandRight));
                 break;
             case SUB:
-                Log.v("SUB", operandLeft.toString() + "-" + operandRight.toString());
+                operandLeft = outputStack.peek();
+                outputStack.pop();
                 outputStack.push(operandLeft.subtract(operandRight));
                 break;
+            case SUU:
+                outputStack.push(operandRight.negate());
+                break;
             case MUL:
+                operandLeft = outputStack.peek();
+                outputStack.pop();
                 outputStack.push(operandLeft.multiply(operandRight));
                 break;
             case DIV:
-                try{
+                operandLeft = outputStack.peek();
+                outputStack.pop();
+                try {
                     outputStack.push(operandLeft.divide(operandRight, BigDecimal.ROUND_HALF_EVEN));
-                } catch(java.lang.ArithmeticException e){
-                    exception = true;
-                    msg = e.getMessage();
+                }
+                catch(ArithmeticException e){
+                    throw new RuntimeException("Division by zero");
                 }
                 break;
             case EXP:
-                Log.v("EXP1", operandLeft.toString() + "^" + operandRight.toString());
-                outputStack.push(operandLeft.pow(operandRight.intValue()));
+                operandLeft = outputStack.peek();
+                outputStack.pop();
+                try{
+                    outputStack.push(operandLeft.pow(operandRight.intValue()));
+                }
+                catch(ArithmeticException e){
+                    throw new RuntimeException("Bad exponent");
+                }
                 break;
-            default:
-                Log.v("EXP", operandLeft.toString() + "^" + operandRight.toString());
         }
         opStack.pop();
     }

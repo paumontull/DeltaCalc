@@ -54,15 +54,16 @@ public class MusicFragment extends Fragment {
         return v;
     }
 
-        private File[] getPaths(){
+    private File[] getPaths(){
         File musicRoot = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
         File[] files = musicRoot.listFiles();
         for(File file : files){
             if(file.isDirectory()){
 
             }
-            else if(file.getName().endsWith(".mp3"))
+            else if(file.getName().endsWith(".mp3"));
         }
+        return files;
     }
 
 }

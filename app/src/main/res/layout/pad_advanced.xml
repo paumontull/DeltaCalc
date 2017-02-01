@@ -10,7 +10,7 @@
     <ImageButton
         style="@style/padTextButton"
         android:id="@+id/call"
-        android:src="@drawable/ic_call_black_24dp"/>
+        android:src="@drawable/ic_call"/>
 
     <Button
         style="@style/padTextButton"
