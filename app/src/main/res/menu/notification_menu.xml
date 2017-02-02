@@ -14,6 +14,10 @@
             android:id="@+id/nav_not_toast"
             android:title="@string/nav_not_toast"/>
 
+        <item
+            android:id="@+id/nav_not_state"
+            android:title="@string/nav_not_state"/>
+
     </group>
 
 </menu>

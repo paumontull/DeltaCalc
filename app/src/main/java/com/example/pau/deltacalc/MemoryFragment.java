@@ -1,19 +1,22 @@
 package com.example.pau.deltacalc;
 
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class MemoryFragment extends Fragment {
 
     private View v;
-    private int mRowCount, mColCount;
+    private int mRowCount, mColCount, lastId = -1;
+    private ArrayList<Card> cards = new ArrayList<>();
 
     public MemoryFragment(){
         // Required empty public constructor
@@ -37,11 +40,31 @@ public class MemoryFragment extends Fragment {
         mColCount = cardGrid.getColCount();
         int nCards = mRowCount * mColCount;
 
-        for(int i = 0; i < nCards; ++i){
+        ArrayList<Integer> ids = new ArrayList<>();
+
+        for(int i = 0; i < nCards/2; ++i){
             View.inflate(getContext(), R.layout.mem_card_elem, cardGrid);
+            cardGrid.getChildAt(i).setId(R.id.mem_card + i);
+
+            int id = (int)(Math.random()*(nCards/2));
+            while(ids.contains(id)) id = (int)(Math.random()*(nCards/2));
+            ids.add(id);
+
+            cards.add(new Card((CardView) cardGrid.getChildAt(i), id));
         }
 
-        cardGrid.getChildAt(1).setBackground(getResources().getDrawable(R.color.colorAccent));
+        ids.clear();
+
+        for(int i = nCards/2; i < nCards; ++i){
+            View.inflate(getContext(), R.layout.mem_card_elem, cardGrid);
+            cardGrid.getChildAt(i).setId(R.id.mem_card + i);
+
+            int id = (int)(Math.random()*(nCards/2));
+            while(ids.contains(id)) id = (int)(Math.random()*(nCards/2));
+            ids.add(id);
+
+            cards.add(new Card((CardView) cardGrid.getChildAt(i), id));
+        }
 
         return v;
     }
@@ -52,14 +75,19 @@ public class MemoryFragment extends Fragment {
         //TODO: Save InstanceState
     }
 
-    public void onClick(View v){
-
-        Toast.makeText(v.getContext(), "click" + Integer.toString(v.getId()), Toast.LENGTH_SHORT).show();
-
-        switch(v.getId()){
-            //TODO: Handle click events
+    public void onClick(View v) {
+        int id = v.getId() - R.id.mem_card;
+        Card card = cards.get(id);
+        card.getCardView().setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent)+ id*8000);
+        if(lastId != -1){
+            Card lastCard = cards.get(lastId);
+            if(lastId != id){
+                card.getCardView().setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.cardview_light_background));
+                lastCard.getCardView().setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.cardview_light_background));
+                lastId = -1;
+            }
         }
+        Log.v("ID", Integer.toString(id) + " " + Integer.toString(lastId));
+        lastId = id;
     }
-
-
 }

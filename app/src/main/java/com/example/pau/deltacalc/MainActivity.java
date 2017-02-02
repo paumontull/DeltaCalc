@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -22,24 +23,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String MUSIC = "MUSIC";
     private static final String MEMORY = "MEMORY";
     private static final String CURRENT_FRAG = "CURRENT_FRAG";
-    int currentFrag;
-    Toolbar toolbar;
-    DrawerLayout drawer;
-    NavigationView navigationView;
-    CalculatorFragment calculatorFragment;
-    MusicFragment musicFragment;
-    MemoryFragment memoryFragment;
+    private int currentFrag;
+    private Toolbar toolbar;
+    private DrawerLayout drawer;
+    private NavigationView navigationView;
+    private CalculatorFragment calculatorFragment;
+    private MusicFragment musicFragment;
+    private MemoryFragment memoryFragment;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        if(checkSelfPermission(Manifest.permission_group.STORAGE) != PackageManager.PERMISSION_GRANTED){
-            requestPermissions(new String[]{Manifest.permission_group.STORAGE}, 123);
-            Log.v("PERM", "request");
-        }
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -63,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 toMainFragment();
                 break;
             case R.id.nav_music:
-                toMusicFragment();
+                toMusicFragmentWrapper();
                 break;
             case R.id.nav_memory:
                 toMemoryFragment();
@@ -84,11 +80,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if(calculatorFragment == null){
                 //The main fragment has not been loaded yet
                 calculatorFragment = new CalculatorFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calculatorFragment, CALC).commit();
             }
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calculatorFragment, CALC).commit();
         }
         currentFrag = R.id.nav_calc;
         getSupportActionBar().setTitle(R.string.nav_calc);
+    }
+
+    private void toMusicFragmentWrapper(){
+        if(android.os.Build.VERSION.SDK_INT >= 23 && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 123);
+            return;
+        }
+        toMusicFragment();
     }
 
     private void toMusicFragment(){
@@ -109,6 +113,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         currentFrag = R.id.nav_music;
         getSupportActionBar().setTitle(R.string.nav_music);
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 123:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission Granted
+                    toMusicFragment();
+                } else {
+                    // Permission Denied
+                    Toast.makeText(MainActivity.this, "READ_STORAGE Denied", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
 
     private void toMemoryFragment(){
         if(getSupportFragmentManager().getBackStackEntryCount() == 0){
@@ -143,32 +165,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_memory:
                 memoryFragment.onClick(v);
                 break;
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        switch (currentFrag){
-            case R.id.nav_calc:
-                getMenuInflater().inflate(R.menu.notification_menu, menu);
-                break;
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.nav_not_snack:
-                item.setChecked(true);
-                calculatorFragment.setNotMode(true);
-                return true;
-            case R.id.nav_not_toast:
-                item.setChecked(true);
-                calculatorFragment.setNotMode(false);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
         }
     }
 

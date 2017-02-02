@@ -1,7 +1,5 @@
 package com.example.pau.deltacalc;
 
-import android.util.Log;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Map;
@@ -44,15 +42,12 @@ public class ShuntingYard {
         }
         if(infix.startsWith("-")) expr.setCharAt(0, '_');
         else if (infix.startsWith("+")) expr.deleteCharAt(0);
-        Log.v("INFIX", infix);
-        Log.v("EXPR", expr.toString());
 
         char lastTok = '+';
         for(int i = 0; i < expr.length(); ++i){
             char tok = expr.charAt(i);
 
             if(ops.containsKey(tok)){
-                Log.v("OPS_tok", Character.toString(tok));
                 if(tok == '(' && !ops.containsKey(lastTok)){
                     tok = '×';
                     --i;
@@ -67,7 +62,6 @@ public class ShuntingYard {
                         }
                     }
                     else if(!((tok == '(' && (lastTok == '+' || lastTok == '-' || lastTok == '^' || lastTok == '(')) || (tok == ')' && lastTok == '('))) throw new RuntimeException("Bad expression");
-                    Log.v("OPS_tok2", Character.toString(tok));
                 }
 
                 evalNumber();
@@ -82,7 +76,6 @@ public class ShuntingYard {
                 }
             }
             else if(tok == ')'){
-                Log.v("RPAR", "right");
                 evalNumber();
                 while(!opStack.isEmpty() && opStack.peek() != Operator.PAR){
                     popOpToOutput();
@@ -91,7 +84,6 @@ public class ShuntingYard {
                 else opStack.pop();
             }
             else{
-                Log.v("NUM", Character.toString(tok));
                 tempNum.append(tok);
             }
 
@@ -102,7 +94,6 @@ public class ShuntingYard {
             popOpToOutput();
         }
         if(outputStack.size() == 0) return "";
-        Log.v("OUTPUT", outputStack.peek().toString());
         return outputStack.peek().setScale(15, RoundingMode.HALF_EVEN).toString();
     }
 

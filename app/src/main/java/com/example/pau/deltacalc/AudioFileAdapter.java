@@ -1,19 +1,15 @@
 package com.example.pau.deltacalc;
 
-import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -25,7 +21,7 @@ public class AudioFileAdapter extends RecyclerView.Adapter<AudioFileAdapter.MyVi
         this.button_list = button_list;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnTouchListener{
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnTouchListener{
 
         MediaPlayer mediaPlayer = new MediaPlayer();
         public TextView fileName;
@@ -38,13 +34,12 @@ public class AudioFileAdapter extends RecyclerView.Adapter<AudioFileAdapter.MyVi
             fileName = (TextView) itemView.findViewById(R.id.VH_file_name);
             cardView = (CardView) itemView.findViewById(R.id.VH_card_view);
 
-            itemView.setOnClickListener(this);
             itemView.setOnTouchListener(this);
         }
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            if(!mediaPlayer.isPlaying()){
+            if(event.getAction() == MotionEvent.ACTION_DOWN && !mediaPlayer.isPlaying()){
                 audioFile = button_list.get(getAdapterPosition());
                 cardView.setCardBackgroundColor(ContextCompat.getColor(cardView.getContext(), audioFile.getColor()));
                 mediaPlayer.reset();
@@ -57,16 +52,12 @@ public class AudioFileAdapter extends RecyclerView.Adapter<AudioFileAdapter.MyVi
                 }
                 mediaPlayer.start();
             }
-            if(event.getAction() == MotionEvent.ACTION_UP) {
+            else if(event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
                 mediaPlayer.reset();
                 cardView.setCardBackgroundColor(ContextCompat.getColor(cardView.getContext(),R.color.cardview_light_background));
                 return true;
             }
             return false;
-        }
-
-        @Override
-        public void onClick(View v) {
         }
     }
 

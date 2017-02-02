@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -12,6 +13,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -56,7 +60,6 @@ public class MusicFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         // Inflate the layout for this fragment
@@ -87,7 +90,7 @@ public class MusicFragment extends Fragment {
         for(File file : files){
             String name = file.getName();
             if(file.isDirectory()){
-
+                //TODO: recursively look in directory
             }
             else if(formats.contains(name.substring(name.lastIndexOf(".")))){
                 button_list.add(new AudioFile(file));

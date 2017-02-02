@@ -1,19 +1,28 @@
 package com.example.pau.deltacalc;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class CalculatorFragment extends Fragment {
@@ -22,19 +31,20 @@ public class CalculatorFragment extends Fragment {
     private static final String TEXT_SIZE = "TEXT_SIZE";
     private static final String DISPLAY_STATE = "DISPLAY_STATE";
     private EditText formulaEditText, resultEditText;
-    private ImageView gif;
+    private RelativeLayout gif;
     private LinearLayout display;
     private View v;
     private int displayState;
-
-    private boolean notMode = true;
-
-    public void setNotMode(boolean notMode) {
-        this.notMode = notMode;
-    }
+    private int notMode = 0;
 
     public CalculatorFragment(){
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate( Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -57,7 +67,7 @@ public class CalculatorFragment extends Fragment {
         resultEditText = (EditText) v.findViewById(R.id.display_result);
 
         display = (LinearLayout) v.findViewById(R.id.display);
-        gif = (ImageView) v.findViewById(R.id.gif);
+        gif = (RelativeLayout) v.findViewById(R.id.gif);
 
         setDisplay(0);
 
@@ -70,6 +80,31 @@ public class CalculatorFragment extends Fragment {
         if(resultEditText.getHint() != null) outState.putString("RESULT_HINT", resultEditText.getHint().toString());
         outState.putFloat("TEXT_SIZE", resultEditText.getTextSize());
         outState.putInt("DISPLAY_STATE", displayState);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.notification_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.nav_not_snack:
+                item.setChecked(true);
+                notMode = 0;
+                return true;
+            case R.id.nav_not_toast:
+                item.setChecked(true);
+                notMode = 1;
+                return true;
+            case R.id.nav_not_state:
+                item.setChecked(true);
+                notMode = 2;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void onClick(View v){
@@ -136,8 +171,21 @@ public class CalculatorFragment extends Fragment {
                     case "Mismatched parentheses":
                     case "Bad exponent":
                         resultEditText.setHint("NaN");
-                        if(notMode) Snackbar.make(v, e.getMessage(),Snackbar.LENGTH_SHORT).show();
-                        else Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        if(notMode == 0) Snackbar.make(v, e.getMessage(),Snackbar.LENGTH_SHORT).show();
+                        else if (notMode == 1) Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        else{
+                            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(v.getContext())
+                                    .setContentTitle("NaN")
+                                    .setContentText(e.getMessage());
+                            Intent resultIntent = new Intent(v.getContext(), MainActivity.class);
+                            TaskStackBuilder stackBuilder = TaskStackBuilder.create(v.getContext());
+                            stackBuilder.addParentStack(MainActivity.class);
+                            stackBuilder.addNextIntent(resultIntent);
+                            PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                            mBuilder.setContentIntent(resultPendingIntent);
+                            NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+                            notificationManager.notify(0, mBuilder.build());
+                        }
                         break;
                     default:
                         throw e;
