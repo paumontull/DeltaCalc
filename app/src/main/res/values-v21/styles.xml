@@ -10,6 +10,7 @@
                 <item name="android:scrollHorizontally">true</item>
                 <item name="android:focusable">true</item>
                 <item name="android:textIsSelectable">true</item>
+                <item name="android:fontFamily">sans-serif-light</item>
                 <item name="android:cursorVisible">false</item>
         </style>
 
@@ -19,7 +20,8 @@
                 <item name="android:layout_height">wrap_content</item>
                 <item name="android:gravity">center</item>
                 <item name="android:textSize">@dimen/pad_button_text</item>
-                <item name="android:textColor">@color/colorSecondaryText</item>
+                <item name="android:textColor">@color/colorPrimaryTextDark</item>
+                <item name="android:fontFamily">sans-serif-light</item>
                 <item name="android:onClick">onClick</item>
         </style>
 </resources>

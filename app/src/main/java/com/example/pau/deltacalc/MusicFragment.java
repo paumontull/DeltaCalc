@@ -1,6 +1,7 @@
 package com.example.pau.deltacalc;
 
 
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Environment;
@@ -65,7 +66,10 @@ public class MusicFragment extends Fragment {
 
         adapter = new AudioFileAdapter(button_list);
 
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(v.getContext(),3);
+        int nCols;
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) nCols = 3;
+        else nCols = 5;
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(v.getContext(), nCols);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new SpacesItemDecoration(4));
         recyclerView.setItemAnimator(new DefaultItemAnimator());

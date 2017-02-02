@@ -2,7 +2,6 @@ package com.example.pau.deltacalc;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -15,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class CalculatorFragment extends Fragment {
 
@@ -27,8 +27,26 @@ public class CalculatorFragment extends Fragment {
     private View v;
     private int displayState;
 
+    private boolean notMode = true;
+
+    public void setNotMode(boolean notMode) {
+        this.notMode = notMode;
+    }
+
     public CalculatorFragment(){
         // Required empty public constructor
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if(savedInstanceState != null) {
+            resultEditText.setHint(savedInstanceState.getString(RESULT_HINT));
+            resultEditText.setTextSize(TypedValue.COMPLEX_UNIT_PX, savedInstanceState.getFloat(TEXT_SIZE));
+            displayState = savedInstanceState.getInt(DISPLAY_STATE);
+            setDisplay(displayState);
+            eval();
+        }
     }
 
     @Override
@@ -47,15 +65,11 @@ public class CalculatorFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if(savedInstanceState != null) {
-            resultEditText.setHint(savedInstanceState.getString(RESULT_HINT));
-            resultEditText.setTextSize(TypedValue.COMPLEX_UNIT_PX, savedInstanceState.getFloat(TEXT_SIZE));
-            displayState = savedInstanceState.getInt(DISPLAY_STATE);
-            setDisplay(displayState);
-            eval();
-        }
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(resultEditText.getHint() != null) outState.putString("RESULT_HINT", resultEditText.getHint().toString());
+        outState.putFloat("TEXT_SIZE", resultEditText.getTextSize());
+        outState.putInt("DISPLAY_STATE", displayState);
     }
 
     public void onClick(View v){
@@ -122,17 +136,13 @@ public class CalculatorFragment extends Fragment {
                     case "Mismatched parentheses":
                     case "Bad exponent":
                         resultEditText.setHint("NaN");
-                        Snackbar.make(v, e.getMessage(),Snackbar.LENGTH_SHORT).show();
+                        if(notMode) Snackbar.make(v, e.getMessage(),Snackbar.LENGTH_SHORT).show();
+                        else Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                         break;
                     default:
                         throw e;
                 }
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     private void onDial(){
@@ -156,14 +166,6 @@ public class CalculatorFragment extends Fragment {
         eval();
         resultEditText.setText(resultEditText.getHint());
         resultEditText.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.result_text));
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString("RESULT_HINT", resultEditText.getHint().toString());
-        outState.putFloat("TEXT_SIZE", resultEditText.getTextSize());
-        outState.putInt("DISPLAY_STATE", displayState);
     }
 
     private void setDisplay(int state){

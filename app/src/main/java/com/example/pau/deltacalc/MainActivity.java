@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private static final String CALC = "CALC";
     private static final String MUSIC = "MUSIC";
+    private static final String MEMORY = "MEMORY";
     private static final String CURRENT_FRAG = "CURRENT_FRAG";
     int currentFrag;
     Toolbar toolbar;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
     CalculatorFragment calculatorFragment;
     MusicFragment musicFragment;
+    MemoryFragment memoryFragment;
 
 
     @Override
@@ -62,6 +64,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_music:
                 toMusicFragment();
+                break;
+            case R.id.nav_memory:
+                toMemoryFragment();
                 break;
             case R.id.nav_settings:
                 break;
@@ -105,6 +110,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getSupportActionBar().setTitle(R.string.nav_music);
     }
 
+    //TODO: revise fragment transition code
+    private void toMemoryFragment(){
+        if(getSupportFragmentManager().getBackStackEntryCount() == 0){
+            //The current fragment is the main fragment
+            memoryFragment = new MemoryFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, memoryFragment, MEMORY).addToBackStack(null).commit();
+        }
+        else{
+            //The current fragment is not the main fragment
+            memoryFragment = (MemoryFragment) getSupportFragmentManager().findFragmentByTag(MEMORY);
+            if(memoryFragment == null){
+                //The current fragment is neither the main fragment nor itself
+                memoryFragment = new MemoryFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, memoryFragment, MEMORY).commit();
+            }
+        }
+        currentFrag = R.id.nav_memory;
+        getSupportActionBar().setTitle(R.string.nav_memory);
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -116,12 +141,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_calc:
                 calculatorFragment.onClick(v);
                 break;
+            case R.id.nav_memory:
+                memoryFragment.onClick(v);
+                break;
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        switch (currentFrag){
+            case R.id.nav_calc:
+                getMenuInflater().inflate(R.menu.notification_menu, menu);
+                break;
+        }
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.nav_not_snack:
+                item.setChecked(true);
+                calculatorFragment.setNotMode(true);
+                return true;
+            case R.id.nav_not_toast:
+                item.setChecked(true);
+                calculatorFragment.setNotMode(false);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

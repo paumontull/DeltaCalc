@@ -7,16 +7,34 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class DeltaPadLayout extends ViewGroup{
+public class ResponsiveGridView extends ViewGroup{
 
     private int mRowCount;
     private int mColCount;
 
-    public DeltaPadLayout(Context context){
+    public int getRowCount() {
+        return mRowCount;
+    }
+
+    public void setRowCount(int rowCount) {
+        this.mRowCount = rowCount;
+    }
+
+    public int getColCount() {
+        return mColCount;
+    }
+
+    public void setColCount(int colCount) {
+        this.mColCount = colCount;
+    }
+
+
+
+    public ResponsiveGridView(Context context){
         super(context, null);
     }
 
-    public DeltaPadLayout(Context context, AttributeSet attrs){
+    public ResponsiveGridView(Context context, AttributeSet attrs){
         super(context, attrs, 0);
 
         final TypedArray a = context.obtainStyledAttributes(attrs, new int[]{android.R.attr.rowCount, android.R.attr.columnCount}, 0, 0);
@@ -28,7 +46,7 @@ public class DeltaPadLayout extends ViewGroup{
         a.recycle();
     }
 
-    public DeltaPadLayout(Context context, AttributeSet attrs, int defStyle){
+    public ResponsiveGridView(Context context, AttributeSet attrs, int defStyle){
         super(context, attrs, defStyle);
 
         final TypedArray a = context.obtainStyledAttributes(attrs, new int[]{android.R.attr.rowCount, android.R.attr.columnCount}, defStyle, 0);
