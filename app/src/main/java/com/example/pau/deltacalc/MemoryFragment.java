@@ -1,7 +1,7 @@
 package com.example.pau.deltacalc;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -11,12 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class MemoryFragment extends Fragment {
 
+    private int lastTag = -1;
+    private ArrayList<Integer> ids = new ArrayList<>();
+    private ArrayList<Integer> found = new ArrayList<>();
     private View v;
-    private int mRowCount, mColCount, lastId = -1;
-    private ArrayList<Card> cards = new ArrayList<>();
 
     public MemoryFragment(){
         // Required empty public constructor
@@ -34,39 +36,27 @@ public class MemoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_memory, container, false);
+        resetGame();
+        return v;
+    }
 
+    private void resetGame(){
         ResponsiveGridView cardGrid = (ResponsiveGridView) v.findViewById(R.id.mem_card_grid);
-        mRowCount = cardGrid.getRowCount();
-        mColCount = cardGrid.getColCount();
+        int mRowCount = cardGrid.getRowCount();
+        int mColCount = cardGrid.getColCount();
         int nCards = mRowCount * mColCount;
 
-        ArrayList<Integer> ids = new ArrayList<>();
-
-        for(int i = 0; i < nCards/2; ++i){
-            View.inflate(getContext(), R.layout.mem_card_elem, cardGrid);
-            cardGrid.getChildAt(i).setId(R.id.mem_card + i);
-
+        for(int i = 0; i < nCards; ++i){
             int id = (int)(Math.random()*(nCards/2));
-            while(ids.contains(id)) id = (int)(Math.random()*(nCards/2));
+            while(Collections.frequency(ids, id) > 1) {
+                id = (int) (Math.random() * (nCards / 2));
+            }
             ids.add(id);
-
-            cards.add(new Card((CardView) cardGrid.getChildAt(i), id));
         }
-
-        ids.clear();
-
-        for(int i = nCards/2; i < nCards; ++i){
+        for(int i = 0; i < nCards; ++i){
             View.inflate(getContext(), R.layout.mem_card_elem, cardGrid);
-            cardGrid.getChildAt(i).setId(R.id.mem_card + i);
-
-            int id = (int)(Math.random()*(nCards/2));
-            while(ids.contains(id)) id = (int)(Math.random()*(nCards/2));
-            ids.add(id);
-
-            cards.add(new Card((CardView) cardGrid.getChildAt(i), id));
+            cardGrid.getChildAt(i).setTag(i);
         }
-
-        return v;
     }
 
     @Override
@@ -75,19 +65,46 @@ public class MemoryFragment extends Fragment {
         //TODO: Save InstanceState
     }
 
-    public void onClick(View v) {
-        int id = v.getId() - R.id.mem_card;
-        Card card = cards.get(id);
-        card.getCardView().setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent)+ id*8000);
-        if(lastId != -1){
-            Card lastCard = cards.get(lastId);
-            if(lastId != id){
-                card.getCardView().setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.cardview_light_background));
-                lastCard.getCardView().setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.cardview_light_background));
-                lastId = -1;
+    private class ResetCards extends AsyncTask<Integer, Void, Integer[]> {
+        @Override
+        protected Integer[] doInBackground(Integer... params) {
+            try{
+                Thread.sleep(500);
+                return params;
+            }
+            catch (InterruptedException e){
+                e.printStackTrace();
+                return null;
             }
         }
-        Log.v("ID", Integer.toString(id) + " " + Integer.toString(lastId));
-        lastId = id;
+        @Override
+        protected void onPostExecute(Integer[] integer) {
+            changeCardColor(integer[0], integer[2]);
+            changeCardColor(integer[1], integer[2]);
+            super.onPostExecute(integer);
+        }
+    }
+
+    private void changeCardColor(int tag, int color){
+        CardView cardView = (CardView) v.findViewWithTag(tag);
+        cardView.setCardBackgroundColor(color);
+    }
+
+    public void onClick(View v) {
+        int tag = (int) v.getTag();
+        if(!found.contains(tag) && tag != lastTag) {
+            changeCardColor(tag, ContextCompat.getColor(getContext(), R.color.colorAccent) + ids.get(tag) * 2000);
+            if (lastTag != -1) {
+                changeCardColor(lastTag, ContextCompat.getColor(getContext(), R.color.colorAccent) + ids.get(lastTag) * 2000);
+                if ((int) ids.get(lastTag) != ids.get(tag)) {
+                    new ResetCards().execute(tag, lastTag, ContextCompat.getColor(getContext(), R.color.cardview_light_background));
+                }
+                else{
+                    found.add(tag);
+                    found.add(lastTag);
+                }
+                lastTag = -1;
+            } else lastTag = tag;
+        }
     }
 }

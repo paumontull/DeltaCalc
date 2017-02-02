@@ -14,10 +14,10 @@ import java.io.IOException;
 import java.util.List;
 
 
-public class AudioFileAdapter extends RecyclerView.Adapter<AudioFileAdapter.MyViewHolder>{
-    private List<AudioFile> button_list;
+public class SoundFileAdapter extends RecyclerView.Adapter<SoundFileAdapter.MyViewHolder>{
+    private List<SoundFile> button_list;
 
-    public AudioFileAdapter(List<AudioFile> button_list){
+    public SoundFileAdapter(List<SoundFile> button_list){
         this.button_list = button_list;
     }
 
@@ -26,7 +26,7 @@ public class AudioFileAdapter extends RecyclerView.Adapter<AudioFileAdapter.MyVi
         MediaPlayer mediaPlayer = new MediaPlayer();
         public TextView fileName;
         public CardView cardView;
-        private AudioFile audioFile;
+        private SoundFile soundFile;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -40,15 +40,15 @@ public class AudioFileAdapter extends RecyclerView.Adapter<AudioFileAdapter.MyVi
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             if(event.getAction() == MotionEvent.ACTION_DOWN && !mediaPlayer.isPlaying()){
-                audioFile = button_list.get(getAdapterPosition());
-                cardView.setCardBackgroundColor(ContextCompat.getColor(cardView.getContext(), audioFile.getColor()));
+                soundFile = button_list.get(getAdapterPosition());
+                cardView.setCardBackgroundColor(ContextCompat.getColor(cardView.getContext(), soundFile.getColor()));
                 mediaPlayer.reset();
                 try {
-                    mediaPlayer.setDataSource(audioFile.getFile().getAbsolutePath());
+                    mediaPlayer.setDataSource(soundFile.getFile().getAbsolutePath());
                     mediaPlayer.prepare();
                     mediaPlayer.setLooping(true);
                 } catch (IllegalArgumentException | IllegalStateException | IOException e) {
-                    Log.v("Bad file: ", audioFile.getFile().getAbsolutePath());
+                    Log.v("Bad file: ", soundFile.getFile().getAbsolutePath());
                 }
                 mediaPlayer.start();
             }
@@ -63,14 +63,14 @@ public class AudioFileAdapter extends RecyclerView.Adapter<AudioFileAdapter.MyVi
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.audio_file_elem, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.sound_file_elem, parent, false);
         return new MyViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        AudioFile audioFile = button_list.get(position);
-        holder.fileName.setText(audioFile.getName());
+        SoundFile soundFile = button_list.get(position);
+        holder.fileName.setText(soundFile.getName());
     }
 
     @Override

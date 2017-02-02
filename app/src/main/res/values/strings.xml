@@ -33,6 +33,7 @@
 
     <string name="nav_calc">Calculator</string>
     <string name="nav_music">Music</string>
+    <string name="nav_sound">SoundBoard</string>
     <string name="nav_memory">Memory</string>
     <string name="nav_settings">Settings</string>
 

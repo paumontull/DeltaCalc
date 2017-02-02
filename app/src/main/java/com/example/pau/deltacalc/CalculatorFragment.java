@@ -2,6 +2,7 @@ package com.example.pau.deltacalc;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -174,17 +175,20 @@ public class CalculatorFragment extends Fragment {
                         if(notMode == 0) Snackbar.make(v, e.getMessage(),Snackbar.LENGTH_SHORT).show();
                         else if (notMode == 1) Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                         else{
-                            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(v.getContext())
-                                    .setContentTitle("NaN")
-                                    .setContentText(e.getMessage());
-                            Intent resultIntent = new Intent(v.getContext(), MainActivity.class);
-                            TaskStackBuilder stackBuilder = TaskStackBuilder.create(v.getContext());
-                            stackBuilder.addParentStack(MainActivity.class);
-                            stackBuilder.addNextIntent(resultIntent);
-                            PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                            mBuilder.setContentIntent(resultPendingIntent);
                             NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-                            notificationManager.notify(0, mBuilder.build());
+                            NotificationCompat.Builder mBuilder =
+                                    new NotificationCompat.Builder(getActivity())
+                                            .setSmallIcon(R.drawable.ic_clear)
+                                            .setContentTitle("Math error: NaN")
+                                            .setContentText(e.getMessage());
+
+                            Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
+                            intent.putExtra(SearchManager.QUERY, e.getMessage());
+                            PendingIntent pendingIntent = PendingIntent.getActivity(getActivity(), 0, intent, 0);
+                            mBuilder.setContentIntent(pendingIntent);
+                            mBuilder.setAutoCancel(true);
+
+                            notificationManager.notify(1, mBuilder.build());
                         }
                         break;
                     default:

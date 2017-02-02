@@ -3,13 +3,58 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/margin_small"
-    tools:context="com.example.pau.deltacalc.MusicFragment">
+    tools:context="com.example.pau.deltacalc.MusicFragment"
+    android:orientation="vertical">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/RecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical"/>
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginEnd="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_small"
+        android:scrollbars="vertical"
+        android:layout_weight="6"/>
+
+    <com.example.pau.deltacalc.ResponsiveGridView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/calculatorPad"
+        android:padding="@dimen/margin_large"
+        android:elevation="@dimen/margin_large"
+        android:rowCount="1"
+        android:columnCount="3">
+
+        <ImageButton
+            style="@style/padTextButton"
+            android:id="@+id/music_previous"
+            android:src="@drawable/ic_skip_previous"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <FrameLayout
+            style="@style/padTextButton"
+            android:id="@+id/music_play_pause_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <rm.com.youtubeplayicon.PlayIconView
+                android:id="@+id/music_play_pause"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"/>
+
+        </FrameLayout>
+
+        <ImageButton
+            style="@style/padTextButton"
+            android:id="@+id/music_next"
+            android:src="@drawable/ic_skip_next"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </com.example.pau.deltacalc.ResponsiveGridView>
 
 </LinearLayout>

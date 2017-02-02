@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private static final String CALC = "CALC";
     private static final String MUSIC = "MUSIC";
+    private static final String SOUND = "SOUND";
     private static final String MEMORY = "MEMORY";
     private static final String CURRENT_FRAG = "CURRENT_FRAG";
     private int currentFrag;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     private CalculatorFragment calculatorFragment;
     private MusicFragment musicFragment;
+    private SoundBoardFragment soundBoardFragment;
     private MemoryFragment memoryFragment;
 
 
@@ -60,6 +62,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_music:
                 toMusicFragmentWrapper();
+                break;
+            case R.id.nav_sound:
+                toSoundBoardFragmentWrapper();
                 break;
             case R.id.nav_memory:
                 toMemoryFragment();
@@ -114,18 +119,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getSupportActionBar().setTitle(R.string.nav_music);
     }
 
+    private void toSoundBoardFragmentWrapper(){
+        if(android.os.Build.VERSION.SDK_INT >= 23 && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 123);
+            return;
+        }
+        toSoundBoardFragment();
+    }
+
+    private void toSoundBoardFragment(){
+        if(getSupportFragmentManager().getBackStackEntryCount() == 0){
+            //The current fragment is the main fragment
+            soundBoardFragment = new SoundBoardFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, soundBoardFragment, SOUND).addToBackStack(null).commit();
+        }
+        else{
+            //The current fragment is not the main fragment
+            soundBoardFragment = (SoundBoardFragment) getSupportFragmentManager().findFragmentByTag(SOUND);
+            if(soundBoardFragment == null){
+                //The current fragment is neither the main fragment nor itself
+                soundBoardFragment = new SoundBoardFragment();
+            }
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, soundBoardFragment, SOUND).commit();
+        }
+        currentFrag = R.id.nav_sound;
+        getSupportActionBar().setTitle(R.string.nav_sound);
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case 123:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permission Granted
-                    toMusicFragment();
-                } else {
-                    // Permission Denied
-                    Toast.makeText(MainActivity.this, "READ_STORAGE Denied", Toast.LENGTH_SHORT).show();
-                }
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) toMusicFragment();
+                else Toast.makeText(MainActivity.this, "READ_STORAGE Denied", Toast.LENGTH_SHORT).show();
                 break;
+            case 124:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) toSoundBoardFragment();
+                else Toast.makeText(MainActivity.this, "READ_STORAGE Denied", Toast.LENGTH_SHORT).show();
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }

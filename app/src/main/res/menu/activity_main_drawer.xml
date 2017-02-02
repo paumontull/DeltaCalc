@@ -18,6 +18,11 @@
             android:title="@string/nav_music"/>
 
         <item
+            android:id="@+id/nav_sound"
+            android:icon="@drawable/ic_headset"
+            android:title="@string/nav_sound"/>
+
+        <item
             android:id="@+id/nav_memory"
             android:icon="@drawable/ic_cards"
             android:title="@string/nav_memory"/>

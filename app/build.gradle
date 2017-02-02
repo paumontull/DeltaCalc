@@ -32,9 +32,11 @@ dependencies {
     repositories {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+        maven { url "https://jitpack.io" }
     }
     dependencies {
         compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.+'
+        compile 'com.github.alxrm:youtube-play-icon:0.9'
     }
     testCompile 'junit:junit:4.12'
 }

@@ -6,13 +6,13 @@ import java.io.File;
  * Created by Pau Montull i Jové on 1/2/17.
  */
 
-public class AudioFile {
+public class SoundFile {
 
     private File file;
 
     private int color = R.color.colorAccent;
 
-    public AudioFile(File file){
+    public SoundFile(File file){
         this.file = file;
     }
 
