@@ -103,14 +103,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if(musicFragment == null){
                 //The current fragment is neither the main fragment nor itself
                 musicFragment = new MusicFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, musicFragment, MUSIC).commit();
             }
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, musicFragment, MUSIC).commit();
         }
         currentFrag = R.id.nav_music;
         getSupportActionBar().setTitle(R.string.nav_music);
     }
 
-    //TODO: revise fragment transition code
     private void toMemoryFragment(){
         if(getSupportFragmentManager().getBackStackEntryCount() == 0){
             //The current fragment is the main fragment
@@ -123,8 +122,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if(memoryFragment == null){
                 //The current fragment is neither the main fragment nor itself
                 memoryFragment = new MemoryFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, memoryFragment, MEMORY).commit();
             }
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, memoryFragment, MEMORY).commit();
         }
         currentFrag = R.id.nav_memory;
         getSupportActionBar().setTitle(R.string.nav_memory);
