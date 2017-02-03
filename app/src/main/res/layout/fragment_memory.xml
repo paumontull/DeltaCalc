@@ -1,9 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.pau.deltacalc.ResponsiveGridView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/mem_card_grid"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/margin_small"
-    android:rowCount="4"
-    android:columnCount="4"/>
+    android:orientation="vertical">
+
+    <com.example.pau.deltacalc.ResponsiveGridView
+        android:id="@+id/mem_card_grid"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/margin_small"
+        android:layout_weight="6"
+        android:rowCount="4"
+        android:columnCount="4"/>
+
+    <TextView
+        android:id="@+id/mem_tries"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textSize="36sp"
+        android:text="Tries"/>
+
+</LinearLayout>

@@ -9,13 +9,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class MemoryFragment extends Fragment {
 
-    private int lastTag = -1;
+    private int lastTag;
+    private int tries;
     private ArrayList<Integer> ids = new ArrayList<>();
     private ArrayList<Integer> found = new ArrayList<>();
     private View v;
@@ -42,6 +44,8 @@ public class MemoryFragment extends Fragment {
 
     private void resetGame(){
         ResponsiveGridView cardGrid = (ResponsiveGridView) v.findViewById(R.id.mem_card_grid);
+        lastTag = 0;
+        tries = 0;
         int mRowCount = cardGrid.getRowCount();
         int mColCount = cardGrid.getColCount();
         int nCards = mRowCount * mColCount;
@@ -88,6 +92,11 @@ public class MemoryFragment extends Fragment {
     private void changeCardColor(int tag, int color){
         CardView cardView = (CardView) v.findViewWithTag(tag);
         cardView.setCardBackgroundColor(color);
+    }
+
+    private void killCard(int tag){
+        CardView cardView = (CardView) v.findViewWithTag(tag);
+        cardView.setVisibility(View.GONE);
     }
 
     public void onClick(View v) {

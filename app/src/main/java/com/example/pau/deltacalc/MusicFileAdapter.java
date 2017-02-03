@@ -1,36 +1,30 @@
 package com.example.pau.deltacalc;
 
-import android.graphics.Color;
-import android.graphics.drawable.AnimatedVectorDrawable;
-import android.media.MediaPlayer;
-import android.provider.ContactsContract;
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
-
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
-
 public class MusicFileAdapter extends RecyclerView.Adapter<MusicFileAdapter.MyViewHolder>{
-    private List<File> button_list;
 
-    public MusicFileAdapter(List<File> button_list){
+    private List<File> button_list;
+    private OnRecyclerViewClickListener listener;
+
+    public MusicFileAdapter(OnRecyclerViewClickListener listener, List<File> button_list){
         this.button_list = button_list;
+        this.listener = listener;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        MediaPlayer mediaPlayer = new MediaPlayer();
         public TextView fileName;
         public FrameLayout frame;
-        private File song;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -45,15 +39,7 @@ public class MusicFileAdapter extends RecyclerView.Adapter<MusicFileAdapter.MyVi
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.VH_card_view:
-                    song = button_list.get(getAdapterPosition());
-                    mediaPlayer.stop();
-                    try {
-                        mediaPlayer.setDataSource(song.getAbsolutePath());
-                        mediaPlayer.prepare();
-                    } catch (IllegalArgumentException | IllegalStateException | IOException e) {
-                        Log.v("Bad file: ", song.getAbsolutePath());
-                    }
-                    mediaPlayer.start();
+                    listener.recyclerViewListClicked(v, getAdapterPosition());
                     break;
             }
         }

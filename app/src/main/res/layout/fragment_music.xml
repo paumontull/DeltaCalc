@@ -17,28 +17,26 @@
         android:scrollbars="vertical"
         android:layout_weight="6"/>
 
-    <com.example.pau.deltacalc.ResponsiveGridView
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@color/calculatorPad"
-        android:padding="@dimen/margin_large"
-        android:elevation="@dimen/margin_large"
-        android:rowCount="1"
-        android:columnCount="3">
+        android:orientation="horizontal"
+        android:background="@color/calculatorPad">
 
-        <ImageButton
-            style="@style/padTextButton"
-            android:id="@+id/music_previous"
-            android:src="@drawable/ic_skip_previous"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+        <android.support.v4.view.ViewPager
+            android:id="@+id/music_playback_pager"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"/>
 
         <FrameLayout
             style="@style/padTextButton"
             android:id="@+id/music_play_pause_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <rm.com.youtubeplayicon.PlayIconView
                 android:id="@+id/music_play_pause"
@@ -48,13 +46,6 @@
 
         </FrameLayout>
 
-        <ImageButton
-            style="@style/padTextButton"
-            android:id="@+id/music_next"
-            android:src="@drawable/ic_skip_next"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-    </com.example.pau.deltacalc.ResponsiveGridView>
+    </LinearLayout>
 
 </LinearLayout>

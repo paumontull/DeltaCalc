@@ -77,7 +77,7 @@ public class ResponsiveGridView extends ViewGroup{
         int iRow = 0, iCol = 0;
         for(int i = 0; i < getChildCount(); ++i){
             final View child = getChildAt(i);
-            if(child.getVisibility() == View.GONE) continue;
+            //if(child.getVisibility() == View.GONE) continue;
 
             final MarginLayoutParams childLP = (MarginLayoutParams) child.getLayoutParams();
 
