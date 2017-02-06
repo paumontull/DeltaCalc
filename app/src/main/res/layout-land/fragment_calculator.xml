@@ -8,7 +8,7 @@
     android:columnCount="2"
     tools:context="com.example.pau.deltacalc.CalculatorFragment">
 
-    <include layout="@layout/display"
+    <include layout="@layout/calc_display"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -17,12 +17,12 @@
         android:layout_height="fill_parent"
         android:orientation="vertical">
 
-        <include layout="@layout/pad_advanced"
+        <include layout="@layout/calc_pad_advanced"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"/>
 
-        <include layout="@layout/pad_simple"
+        <include layout="@layout/calc_pad_simple"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="3"/>

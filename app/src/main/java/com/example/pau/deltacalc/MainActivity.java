@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String MUSIC = "MUSIC";
     private static final String SOUND = "SOUND";
     private static final String MEMORY = "MEMORY";
+    private static final String RANKING = "RANKING";
     private static final String CURRENT_FRAG = "CURRENT_FRAG";
     private int currentFrag;
     private Toolbar toolbar;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private MusicFragment musicFragment;
     private SoundBoardFragment soundBoardFragment;
     private MemoryFragment memoryFragment;
+    private RankingFragment rankingFragment;
 
 
     @Override
@@ -68,6 +70,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_memory:
                 toMemoryFragment();
+                break;
+            case R.id.nav_ranking:
+                toRankingFragment();
                 break;
             case R.id.nav_settings:
                 break;
@@ -179,6 +184,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         currentFrag = R.id.nav_memory;
         getSupportActionBar().setTitle(R.string.nav_memory);
+    }
+
+    private void toRankingFragment(){
+        if(getSupportFragmentManager().getBackStackEntryCount() == 0){
+            //The current fragment is the main fragment
+            rankingFragment = new RankingFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, rankingFragment, RANKING).addToBackStack(null).commit();
+        }
+        else{
+            //The current fragment is not the main fragment
+            rankingFragment = (RankingFragment) getSupportFragmentManager().findFragmentByTag(RANKING);
+            if(rankingFragment == null){
+                //The current fragment is neither the main fragment nor itself
+                rankingFragment = new RankingFragment();
+            }
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, rankingFragment, RANKING).commit();
+        }
+        currentFrag = R.id.nav_ranking;
+        getSupportActionBar().setTitle(R.string.nav_ranking);
     }
 
     @Override

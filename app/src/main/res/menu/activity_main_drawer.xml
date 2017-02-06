@@ -27,6 +27,11 @@
             android:icon="@drawable/ic_cards"
             android:title="@string/nav_memory"/>
 
+        <item
+            android:id="@+id/nav_ranking"
+            android:icon="@drawable/ic_star"
+            android:title="@string/nav_ranking"/>
+
     </group>
 
     <group

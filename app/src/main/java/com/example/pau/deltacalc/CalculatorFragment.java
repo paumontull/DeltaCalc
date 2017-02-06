@@ -10,7 +10,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -21,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -85,7 +83,7 @@ public class CalculatorFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.notification_menu, menu);
+        inflater.inflate(R.menu.calc_notification_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

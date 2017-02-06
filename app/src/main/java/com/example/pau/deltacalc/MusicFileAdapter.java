@@ -1,7 +1,5 @@
 package com.example.pau.deltacalc;
 
-import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,8 +51,8 @@ public class MusicFileAdapter extends RecyclerView.Adapter<MusicFileAdapter.MyVi
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        File soundFile = button_list.get(position);
-        holder.fileName.setText(soundFile.getName());
+        String currentName = button_list.get(position).getName();
+        holder.fileName.setText(currentName.substring(0, currentName.lastIndexOf(".")));
     }
 
     @Override

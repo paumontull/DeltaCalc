@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -23,7 +24,7 @@ import java.util.List;
 
 public class SoundBoardFragment extends Fragment {
 
-    private List<SoundFile> button_list = new ArrayList<>();
+    private List<File> button_list = new ArrayList<>();
 
     private static HashSet<String> formats = new HashSet<String>(){{
         add(".3gp");
@@ -67,25 +68,25 @@ public class SoundBoardFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
 
-        getPaths();
+        button_list.addAll(getPaths(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)));
 
         return v;
     }
 
-    private File[] getPaths(){
-        File soundRoot = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
-        File[] files = soundRoot.listFiles();
-        Log.v("FILE:", soundRoot.getAbsolutePath());
-        for(File file : files){
+    private List<File> getPaths(File root){
+        List<File> inputFiles = new ArrayList<>(Arrays.asList(root.listFiles()));
+        List<File> outputFiles = new ArrayList<>(Arrays.asList(root.listFiles()));
+        for(File file : inputFiles){
             String name = file.getName();
             if(file.isDirectory()){
-                //TODO: recursively look in directory
+                outputFiles.addAll(getPaths(file));
+                outputFiles.remove(file);
             }
-            else if(formats.contains(name.substring(name.lastIndexOf(".")))){
-                button_list.add(new SoundFile(file));
+            else if(!formats.contains(name.substring(name.lastIndexOf(".")))){
+                outputFiles.remove(file);
             }
         }
-        return files;
+        return outputFiles;
     }
 
     public class SpacesItemDecoration extends RecyclerView.ItemDecoration {

@@ -1,7 +1,6 @@
 package com.example.pau.deltacalc;
 
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,19 +18,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
 import rm.com.youtubeplayicon.PlayIconDrawable;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class MusicFragment extends Fragment implements View.OnClickListener, OnRecyclerViewClickListener, ViewPager.OnPageChangeListener{
 
     private static HashSet<String> formats = new HashSet<String>(){{
@@ -58,7 +53,6 @@ public class MusicFragment extends Fragment implements View.OnClickListener, OnR
     private ViewPager playBackPager;
     private PagerAdapter pagerAdapter;
     private PlayIconDrawable play;
-    private MusicFileAdapter RecyclerAdapter;
     private MediaPlayer mediaPlayer = new MediaPlayer();
     private Boolean prepared = false;
 
@@ -77,13 +71,12 @@ public class MusicFragment extends Fragment implements View.OnClickListener, OnR
         playBackPager.addOnPageChangeListener(this);
 
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.RecyclerView);
-        RecyclerAdapter = new MusicFileAdapter(this, button_list);
+        MusicFileAdapter recyclerAdapter = new MusicFileAdapter(this, button_list);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(v.getContext());
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(new SpacesItemDecoration(24));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(RecyclerAdapter);
+        recyclerView.setAdapter(recyclerAdapter);
 
         ImageView iconView = (ImageView) v.findViewById(R.id.music_play_pause);
         play = PlayIconDrawable.builder()
@@ -96,7 +89,7 @@ public class MusicFragment extends Fragment implements View.OnClickListener, OnR
         FrameLayout playPauseContainer = (FrameLayout) v.findViewById(R.id.music_play_pause_container);
         playPauseContainer.setOnClickListener(this);
 
-        getPaths();
+        button_list.addAll(getPaths(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)));
 
         return v;
     }
@@ -104,25 +97,26 @@ public class MusicFragment extends Fragment implements View.OnClickListener, OnR
     private void setPlayBackPager(List<File> queue){
         for(int i = 0; i < queue.size(); ++i){
             PlayBackFragment fragment = new PlayBackFragment();
-            fragment.setCurrentSongText(queue.get(i).getName());
+            String currentName = queue.get(i).getName();
+            fragment.setCurrentSongText(currentName.substring(0, currentName.lastIndexOf(".")));
             pagerAdapter.addFragment(fragment);
         }
     }
 
-    private File[] getPaths(){
-        File musicRoot = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
-        File[] files = musicRoot.listFiles();
-        Log.v("FILE:", musicRoot.getAbsolutePath());
-        for(File file : files){
+    private List<File> getPaths(File root){
+        List<File> inputFiles = new ArrayList<>(Arrays.asList(root.listFiles()));
+        List<File> outputFiles = new ArrayList<>(Arrays.asList(root.listFiles()));
+        for(File file : inputFiles){
             String name = file.getName();
             if(file.isDirectory()){
-                //TODO: recursively look in directory
+                outputFiles.addAll(getPaths(file));
+                outputFiles.remove(file);
             }
-            else if(formats.contains(name.substring(name.lastIndexOf(".")))){
-                button_list.add(file);
+            else if(!formats.contains(name.substring(name.lastIndexOf(".")))){
+                outputFiles.remove(file);
             }
         }
-        return files;
+        return outputFiles;
     }
 
     @Override
@@ -161,6 +155,12 @@ public class MusicFragment extends Fragment implements View.OnClickListener, OnR
         mediaPlayer.reset();
         try {
             mediaPlayer.setDataSource(button_list.get(position).getAbsolutePath());
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    playBackPager.setCurrentItem(playBackPager.getCurrentItem() + 1);
+                }
+            });
             mediaPlayer.prepare();
             mediaPlayer.start();
         }
@@ -171,19 +171,6 @@ public class MusicFragment extends Fragment implements View.OnClickListener, OnR
 
     @Override
     public void onPageScrollStateChanged(int state) {}
-
-    public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
-        private int space;
-
-        public SpacesItemDecoration(int space) {
-            this.space = space;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            outRect.bottom = space;
-        }
-    }
 
     public class PagerAdapter extends FragmentStatePagerAdapter {
 
