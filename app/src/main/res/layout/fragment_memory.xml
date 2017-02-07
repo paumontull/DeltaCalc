@@ -1,27 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <com.example.pau.deltacalc.ResponsiveGridView
-        android:id="@+id/mem_card_grid"
+    <LinearLayout
+        android:id="@+id/mem_game"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="@dimen/margin_small"
-        android:layout_weight="5"
-        android:rowCount="4"
-        android:columnCount="4"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
 
-    <TextView
-        android:id="@+id/mem_tries"
+        <com.example.pau.deltacalc.ResponsiveGridView
+            android:id="@+id/mem_card_grid"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/margin_small"
+            android:layout_weight="5"
+            android:rowCount="4"
+            android:columnCount="4"/>
+
+        <TextView
+            android:id="@+id/mem_tries"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="36sp"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/mem_tries"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/mem_set_size"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:textSize="36sp"
-        android:fontFamily="sans-serif-light"
-        android:text="@string/mem_tries"/>
+        android:layout_height="match_parent"
+        android:padding="32dp">
 
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Number of columns:"/>
+
+                <TextView
+                    android:id="@+id/mem_ncol_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:text="4"
+                    android:textSize="@dimen/pad_button_text"
+                    android:fontFamily="sans-serif-light"/>
+
+            </RelativeLayout>
+
+            <SeekBar
+                android:id="@+id/mem_ncol"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_large"
+                android:max="6"
+                android:progress="2"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Number of rows:"/>
+
+                <TextView
+                    android:id="@+id/mem_nrow_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:text="4"
+                    android:textSize="@dimen/pad_button_text"
+                    android:fontFamily="sans-serif-light"/>
+
+            </RelativeLayout>
+
+            <SeekBar
+                android:id="@+id/mem_nrow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_large"
+                android:max="6"
+                android:progress="2"/>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/mem_game_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/pad_button_background"
+            android:text="Start game"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -129,7 +129,7 @@ public class MusicFragment extends Fragment implements View.OnClickListener, OnR
                     play.animateToState(PlayIconDrawable.IconState.PLAY);
                 }
                 else{
-                    mediaPlayer.start();
+                    setPlayBackPager(button_list);
                     play.animateToState(PlayIconDrawable.IconState.PAUSE);
                 }
                 break;

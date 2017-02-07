@@ -26,15 +26,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String RANKING = "RANKING";
     private static final String CURRENT_FRAG = "CURRENT_FRAG";
     private int currentFrag;
-    private Toolbar toolbar;
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private CalculatorFragment calculatorFragment;
-    private MusicFragment musicFragment;
-    private SoundBoardFragment soundBoardFragment;
     private MemoryFragment memoryFragment;
-    private RankingFragment rankingFragment;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);
         toggle.syncState();
@@ -83,10 +78,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(getSupportFragmentManager().getBackStackEntryCount() > 0){
             //The main fragment is in the backstack
             getSupportFragmentManager().popBackStack();
+            calculatorFragment = (CalculatorFragment) getSupportFragmentManager().findFragmentByTag(CALC);
         }
         else{
-            //The main fragment is not in the backstack
             calculatorFragment = (CalculatorFragment) getSupportFragmentManager().findFragmentByTag(CALC);
+            //The main fragment is not in the backstack
             if(calculatorFragment == null){
                 //The main fragment has not been loaded yet
                 calculatorFragment = new CalculatorFragment();
@@ -106,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void toMusicFragment(){
+        MusicFragment musicFragment;
         if(getSupportFragmentManager().getBackStackEntryCount() == 0){
             //The current fragment is the main fragment
             musicFragment = new MusicFragment();
@@ -133,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void toSoundBoardFragment(){
+        SoundBoardFragment soundBoardFragment;
         if(getSupportFragmentManager().getBackStackEntryCount() == 0){
             //The current fragment is the main fragment
             soundBoardFragment = new SoundBoardFragment();
@@ -187,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void toRankingFragment(){
+        RankingFragment rankingFragment;
         if(getSupportFragmentManager().getBackStackEntryCount() == 0){
             //The current fragment is the main fragment
             rankingFragment = new RankingFragment();
@@ -194,11 +193,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         else{
             //The current fragment is not the main fragment
-            rankingFragment = (RankingFragment) getSupportFragmentManager().findFragmentByTag(RANKING);
-            if(rankingFragment == null){
-                //The current fragment is neither the main fragment nor itself
-                rankingFragment = new RankingFragment();
-            }
+            rankingFragment = new RankingFragment();
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, rankingFragment, RANKING).commit();
         }
         currentFrag = R.id.nav_ranking;

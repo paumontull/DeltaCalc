@@ -11,7 +11,7 @@ public class RankingOpenHelper extends SQLiteOpenHelper{
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "project";
     private static final String RANKING_TABLE_NAME = "Ranking";
-    private static final String RANKING_TABLE_CREATE = "CREATE TABLE " + RANKING_TABLE_NAME + " (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT, score INTEGER)";
+    private static final String RANKING_TABLE_CREATE = "CREATE TABLE " + RANKING_TABLE_NAME + " (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT, cards INTEGER, score INTEGER)";
 
     public RankingOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -28,10 +28,11 @@ public class RankingOpenHelper extends SQLiteOpenHelper{
         db.execSQL(RANKING_TABLE_CREATE);
     }
 
-    public Cursor getRanking(){
+    public Cursor getRanking(int cards){
         SQLiteDatabase db = this.getReadableDatabase();
         String[] columns = {"user", "score"};
-        return db.query(RANKING_TABLE_NAME, columns, null, null, null, null, "score ASC");
+        String[] where = {Integer.toString(cards)};
+        return db.query(RANKING_TABLE_NAME, columns, "cards=?", where, null, null, "score ASC");
     }
 
     public void addScore(ContentValues values, String tableName){

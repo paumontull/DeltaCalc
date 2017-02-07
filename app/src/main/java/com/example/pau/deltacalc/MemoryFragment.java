@@ -10,12 +10,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -60,15 +65,75 @@ public class MemoryFragment extends Fragment implements OnEndGameResetButtonClic
     }
 
     private void setGame(){
+        final LinearLayout game = (LinearLayout) v.findViewById(R.id.mem_game);
+        game.setVisibility(View.GONE);
+
+        final RelativeLayout setup = (RelativeLayout) v.findViewById(R.id.mem_set_size);
+        setup.setVisibility(View.VISIBLE);
+
+        final TextView nColNumber = (TextView) v.findViewById(R.id.mem_ncol_number);
+        final SeekBar nColSeekBar = (SeekBar) v.findViewById(R.id.mem_ncol);
+        final TextView nRowNumber = (TextView) v.findViewById(R.id.mem_nrow_number);
+        final SeekBar nRowSeekBar = (SeekBar) v.findViewById(R.id.mem_nrow);
+
+        nColSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(nRowSeekBar.getProgress()%2 != 0 && progress%2 !=0) nColSeekBar.setProgress(--progress);
+                nColNumber.setText(String.format(Locale.getDefault(), "%d", progress + 2));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        nRowSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(nColSeekBar.getProgress()%2 != 0 && progress%2 !=0) nRowSeekBar.setProgress(--progress);
+                nRowNumber.setText(String.format(Locale.getDefault(), "%d", progress + 2));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        Button start = (Button) v.findViewById(R.id.mem_game_start);
+        start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setup.setVisibility(View.GONE);
+                game.setVisibility(View.VISIBLE);
+                Log.v("TAG", String.format(Locale.getDefault(), "%d", nColSeekBar.getProgress() + 2) + " " + String.format(Locale.getDefault(), "%d", nColSeekBar.getProgress() + 2));
+                startGame(nColSeekBar.getProgress() + 2, nRowSeekBar.getProgress() + 2);
+            }
+        });
+    }
+
+    private void startGame(int nCol, int nRow){
         ResponsiveGridView cardGrid = (ResponsiveGridView) v.findViewById(R.id.mem_card_grid);
+        cardGrid.setColCount(nCol);
+        cardGrid.setRowCount(nRow);
         cardGrid.removeAllViews();
         lastTag = -1;
         tries = 0;
         ids = new ArrayList<>();
         found = new ArrayList<>();
-        int mRowCount = cardGrid.getRowCount();
-        int mColCount = cardGrid.getColCount();
-        nCards = mRowCount * mColCount;
+        nCards = nCol * nRow;
 
         for(int i = 0; i < nCards; ++i){
             int id = (int)(Math.random()*(nCards/2));
@@ -178,6 +243,7 @@ public class MemoryFragment extends Fragment implements OnEndGameResetButtonClic
         RankingOpenHelper rankingOpenHelper = new RankingOpenHelper(getActivity().getApplicationContext());
         ContentValues values = new ContentValues();
         values.put("user", "Pau");
+        values.put("cards", String.format(Locale.getDefault(), "%d", nCards));
         values.put("score", String.format(Locale.getDefault(), "%d", tries));
         rankingOpenHelper.addScore(values, "Ranking");
 

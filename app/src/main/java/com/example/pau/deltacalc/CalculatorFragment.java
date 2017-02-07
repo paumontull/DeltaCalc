@@ -10,7 +10,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -154,7 +153,6 @@ public class CalculatorFragment extends Fragment {
 
     private void eval(){
         try {
-            Log.v("INPUT", formulaEditText.getText().toString());
             String eval = ShuntingYard.eval(formulaEditText.getText().toString());
             while (eval.endsWith("0") || eval.endsWith(".")) {
                 eval = eval.substring(0, eval.length() - 1);
