@@ -129,7 +129,8 @@ public class RankingFragment extends Fragment {
                 RankingOpenHelper rankingOpenHelper = new RankingOpenHelper(getActivity().getApplicationContext());
                 rankingOpenHelper.resetTable("Ranking");
                 pagerAdapter.clearFragments();
-
+                noItems.setVisibility(View.VISIBLE);
+                rankingPager.setVisibility(View.GONE);
                 break;
         }
         return true;
